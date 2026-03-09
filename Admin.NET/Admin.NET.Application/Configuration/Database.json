@@ -14,8 +14,8 @@
         //"ConnectionString": "PORT=5432;DATABASE=xxx;HOST=localhost;PASSWORD=xxx;USER ID=xxx", // PostgreSQL
         //"ConnectionString": "Server=localhost;Port=3306;Database=xxx;Uid=xxx;Pwd=xxx;SslMode=None;AllowLoadLocalInfile=true;Allow User Variables=True;CharSet=utf8mb4;", // MariaDB/MySQL
         //"ConnectionString": "User Id=xxx; Password=xxx; Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORCL)))", // Oracle
-        "ConnectionString": "Server=8.155.168.138;Port=3306;Database=jc44;Uid=app_user;Pwd=boxline!@#;SslMode=None;AllowLoadLocalInfile=true;Allow User Variables=True;CharSet=utf8mb4;", // MariaDB/MySQL
-        //"ConnectionString": "Server=127.0.0.1;Port=3306;Database=JC44_WMS;Uid=myuser_all;Pwd=admin2023@;SslMode=None;AllowLoadLocalInfile=true;Allow User Variables=True;CharSet=utf8mb4;", // MariaDB/MySQL
+        "ConnectionString": "Server=8.155.168.138;Port=3306;Database=jc44;Uid=app_user;Pwd=CHANGE_ME;SslMode=None;AllowLoadLocalInfile=true;Allow User Variables=True;CharSet=utf8mb4;", // MariaDB/MySQL
+        //"ConnectionString": "Server=8.155.168.138;Port=3306;Database=jc44;Uid=app_user;Pwd=实际密码;SslMode=None;AllowLoadLocalInfile=true;Allow User Variables=True;CharSet=utf8mb4;", // MariaDB/MySQL
 
         //"SlaveConnectionConfigs": [ // 读写分离/主从
         //	{

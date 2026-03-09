@@ -8,7 +8,7 @@
       {
         //"ConfigId": "1300000000001", // 默认库标识-禁止修改
         "DbType": "MySqlConnector", // MariaDB/MySQL 推荐使用 MySqlConnector 驱动
-        "ConnectionString": "Server=mysql;Port=3306;Database=admin_net_wms;Uid=root;Pwd=AdminNet@2026;AllowLoadLocalInfile=true;Allow User Variables=True;SslMode=None;CharSet=utf8mb4;", // 库连接字符串
+        "ConnectionString": "Server=__MARIADB_HOST__;Port=__MARIADB_PORT__;Database=__MARIADB_DATABASE__;Uid=__MARIADB_USER__;Pwd=__MARIADB_PASSWORD__;AllowLoadLocalInfile=true;Allow User Variables=True;SslMode=None;CharSet=utf8mb4;", // 库连接字符串
         "DbSettings": {
           "EnableInitDb": true, // 启用库初始化
           "EnableDiffLog": false, // 启用库表差异日志

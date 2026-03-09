@@ -1,28 +1,4 @@
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: adminnet-mysql
-    restart: unless-stopped
-    command:
-      - --default-authentication-plugin=mysql_native_password
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_general_ci
-    environment:
-      TZ: Asia/Shanghai
-      MYSQL_ROOT_HOST: "%"
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-admin_net_wms}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-AdminNet@2026}
-    ports:
-      - "9101:3306"
-    volumes:
-      - ./mysql/data:/var/lib/mysql
-      - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${MYSQL_ROOT_PASSWORD:-AdminNet@2026}"]
-      interval: 10s
-      timeout: 5s
-      retries: 20
-
   redis:
     image: redis:7-alpine
     container_name: adminnet-redis
@@ -49,19 +25,23 @@ services:
     environment:
       TZ: Asia/Shanghai
       ASPNETCORE_ENVIRONMENT: Production
+      MARIADB_HOST: ${MARIADB_HOST:-8.155.168.138}
+      MARIADB_PORT: ${MARIADB_PORT:-3306}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-jc44}
+      MARIADB_USER: ${MARIADB_USER:-app_user}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-CHANGE_ME}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-AdminNetRedis@2026}
     depends_on:
-      mysql:
-        condition: service_healthy
       redis:
         condition: service_healthy
     command:
       - /bin/bash
-      - -c
-      - /bin/bash /app/wait-for-it.sh mysql:3306 -t 180 -- /bin/bash /app/wait-for-it.sh redis:6379 -t 180 -- dotnet Admin.NET.Web.Entry.dll
+      - /app/start-backend.sh
     ports:
       - "${BACKEND_PORT:-9102}:5005"
     volumes:
-      - ./app/Configuration:/app/Configuration:ro
+      - ./app/Configuration:/config-template:ro
+      - ./app/start-backend.sh:/app/start-backend.sh:ro
       - ./app/wait-for-it.sh:/app/wait-for-it.sh:ro
       - ./data/backend/upload:/app/wwwroot/upload
       - ./data/backend/avatar:/app/wwwroot/avatar
