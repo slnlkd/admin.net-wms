@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Boxline PDA</title>
+
+    <link rel="stylesheet" href="../../layui/css/layui.css" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/adaptive.js"></script>
+
+    <link rel="stylesheet" href="../../css/my.css" />
+    <style type="text/css">
+        .layout-bill-info {
+            height: 255px;
+        }
+
+        .layout-tbl-submit {
+            margin-top: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="../../css/adapter.css" />
+</head>
+
+<body>
+    <div class="main-content">
+        <div class="layout-title">
+            <table>
+                <tr>
+                    <td class="img-back"><a href="../../index.html"><img src="../../assets/back.jpg"></a></td>
+                    <td class="title-text">血浆暂存</td>
+                    <td class="title-menu-icon"><img id="menuImg" src="../../assets/menu.jpg"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="layout-sub-content">
+            <div id="menuList" class="menu">
+                <ul class="" style="text-align: center;">
+                    <li><a href="../../index.html">主页</a></li>
+                    <li><a href="../../login.html">重新登录</a></li>
+                </ul>
+            </div>
+
+            <div class="layout-bill-info">
+                <form class="layui-form">
+                    <div id="layout-pallet" class="layui-form-item layout-input">
+                        <label class="layui-form-label">主载具：</label>
+                        <div class="layui-input-block">
+                            <input id="VehicleCode" type="text" placeholder="请扫描主载具" autocomplete="off"
+                                class="layui-input">
+                        </div>
+                    </div>
+                    <div id="layout-boxcode" class="layui-form-item layout-input">
+                        <label class="layui-form-label">副载具：</label>
+                        <div class="layui-input-block">
+                            <input id="VehicleSubCode" type="text" placeholder="请扫描副载具" autocomplete="off"
+                                class="layui-input">
+                        </div>
+                    </div>
+                    <div style="margin-left: 21%; width: 38%;float: left;">
+                        <button id="btnScanBox" class="layout-btn layout-btn-blue" lay-submit lay-filter="formBind"
+                            type="button">绑定</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../../js/jquery-3.5.1.min.js"></script>
+    <script src="../../layui/layui.js"></script>
+    <script src="../../js/public.js"></script>
+    <script src="../../js/jquery.cookie.js"></script>
+    <script>
+        layui.use(['form', 'jquery'], function () {
+            var form = layui.form,
+                uid = $.cookie('userName');
+            $("#menuImg").click(function (e) {
+                e.stopPropagation()
+                if ($("#menuList").is(":hidden")) {
+                    $("#menuList").show()
+                } else {
+                    $("#menuList").hide()
+                }
+            })
+            $('body').click(function () {
+                $("#menuList").hide()
+            })
+            form.on('submit(formBind)', function (data) {
+                if ($("#VehicleCode").val() == '') {
+                    layer.msg('载具号不能为空！');
+                    return;
+                }
+                bind();
+            });
+            //绑定载具并生成流水信息
+            function bind() {
+                var param = {
+                    vehicleCode: $("#VehicleCode").val(),
+                    vehicleSubCode: $("#VehicleSubCode").val(),
+                    userId: uid
+                }
+                sendData(IP + "/wmsPda/temporaryStorage", param, 'post', function (res) {
+                    // 新项目返回格式：{ success: true/false, message: "..." }
+                    // 兼容框架可能包装的格式：res.result 或 res.data
+                    var result = res.result || res.data || res;
+                    if (result.success === true || result.code == 1) { //成功 
+                        layer.msg(result.message || result.msg, {
+                            icon: 1,
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                        });
+                        $("#VehicleCode").val('');
+                        $("#VehicleSubCode").val('');
+                    } else { //不成功
+                        layer.msg(result.message || result.msg, {
+                            icon: 2,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //回调
+                        });
+                    }
+                });
+            }
+        })
+    </script>
+</body>
+
+</html>

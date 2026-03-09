@@ -1,0 +1,111 @@
+import {useBaseApi} from '/@/api/base';
+
+// 库存箱码接口服务
+export const usewmsStockSlotBoxInfoApi = () => {
+    const baseApi = useBaseApi("wmsStockSlotBoxInfo");
+    return {
+        // 分页查询库存箱码
+        page: baseApi.page,
+        // 查看库存箱码详细
+        detail: baseApi.detail,
+        // 新增库存箱码
+        add: baseApi.add,
+        // 更新库存箱码
+        update: baseApi.update,
+        // 删除库存箱码
+        delete: baseApi.delete,
+        // 批量删除库存箱码
+        batchDelete: baseApi.batchDelete,
+      
+    }
+}
+
+ // 库存箱码实体
+export interface WmsStockSlotBoxInfoOutput {
+    // 主键Id
+    id: number;
+    // 箱码
+    boxCode?: string;
+    // 数量
+    qty?: number;
+    // 整箱数
+    fullBoxQty?: number;
+    // 托盘条码
+    stockCode?: string;
+    // 托盘条码id
+    stockCodeId?: number;
+    // 状态（0未执行；1正在入库；2已入库）
+    status?: number;
+    // 入库单id
+    importId?: number;
+    // 入库单详情id
+    importDetailId?: number;
+    // 入库流水id
+    importOrderId?: number;
+    // 等级
+    boxLevel?: number;
+    // 生产日期
+    productionDate?: string;
+    // 保质期
+    validateDay?: string;
+    // 批次
+    lotNo?: string;
+    // 物料id
+    materialId?: number;
+    // 是否零箱（0否；1是）
+    bulkTank?: number;
+    // 是否抽检箱（0否；1是）
+    isSamplingBox?: number;
+    // 质检状态（0待检；1合格；2不合格）
+    inspectionStatus?: number;
+    // erp箱二维码
+    qrCode?: string;
+    // 采样日期
+    samplingDate?: string;
+    // 浆员编码
+    staffCode?: string;
+    // 浆员姓名
+    staffName?: string;
+    // 血浆重量
+    weight?: number;
+    // 剔除原因（手持剔除异常血浆存放）
+    reasonsForExcl?: string;
+    // 检疫期状态（1检疫期满足；2检疫期不满足；3检疫期不合格）
+    extractStatus?: number;
+    // 是否挑浆（0默认；1挑浆）
+    pickingSlurry?: string;
+    // 血浆拒收类型id
+    plasmaRejectTypeId?: string;
+    // 是否删除（0否；1是）
+    isDelte?: number;
+    // 创建时间
+    createTime?: string;
+    // 创建人
+    createUser?: string;
+    // 更新时间
+    updateTime?: string;
+    // 修改人
+    updateUser?: string;
+    // 入库流水单号
+    importOrderNo?: string;
+    // 物料编码
+    materialCode?: string;
+    // 物料名称
+    materialName?: string;
+    // 入库执行状态
+    importExecuteFlag?: string;
+    // 计划数量
+    importQuantity?: number;
+    // 实际数量
+    importFactQuantity?: number;
+    // 入库单号
+    importBillCode?: string;
+    // 检验单号
+    inspectBillCode?: string;
+    // 物料规格
+    materialStandard?: string;
+    // 单位名称
+    unitName?: string;
+    // 箱数量
+    boxQuantity?: string;
+}

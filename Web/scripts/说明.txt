@@ -1,0 +1,3 @@
+python 必备安装环境 cmd 执行这个命令
+
+pip install pyodbc pandas openpyxl

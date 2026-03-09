@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="viewport" content="user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Boxline PDA</title>
+
+	<link rel="stylesheet" href="../../layui/css/layui.css" />
+	<link rel="stylesheet" href="../../css/style.css" />
+	<script src="../../js/adaptive.js"></script>
+
+	<link rel="stylesheet" href="../../css/my.css" />
+	<style type="text/css">
+		.layout-bill-info {
+			height: auto;
+		}
+
+		.layout-tbl-submit {
+			margin-top: 10px;
+		}
+
+		.fact-input {
+			width: 40px;
+			padding-left: 5px;
+			margin-left: 2px;
+			margin-right: 2px;
+		}
+
+		.foot-container {
+			height: 36px;
+			text-align: center;
+			margin: auto;
+			/* background-color: #009688; */
+			width: 100%;
+			max-width: 320px;
+			bottom: 2px;
+		}
+
+		.btn-ok {
+			border: none;
+			color: #FFFFFF;
+			background-color: #0a93e3;
+			width: 48%;
+			height: 100%;
+			border-radius: 2px;
+			float: left;
+			margin: 0 1%;
+		}
+
+		.btn-cancel {
+			border: none;
+			color: #FFFFFF;
+			background-color: #9f1707;
+			width: 48%;
+			height: 100%;
+			float: left;
+			border-radius: 2px;
+			margin: 0 1%;
+		}
+
+		.btn-ok:active {
+			opacity: 0.8;
+		}
+
+		.btn-cancel:active {
+			opacity: 0.8;
+		}
+
+		.div-tbl-title {
+			width: 98%;
+			margin: auto;
+			height: 30px;
+			margin-top: 20px;
+		}
+
+		.div-tbl-title table {
+			width: 100%;
+			height: 30px;
+		}
+
+		.div-tbl-title td {
+			width: 50%;
+			height: 30px;
+			line-height: 30px;
+		}
+
+		.div-tbl-title span {
+			float: left;
+			width: 60%;
+			height: 30px;
+			line-height: 30px;
+		}
+
+		.div-tbl-title input {
+			float: left;
+			width: 40%;
+			height: 30px;
+			line-height: 30px;
+			border: none;
+		}
+
+		.layout-tbl-paging {
+			margin-top: 0;
+		}
+
+		.tbl-box-list {
+			font-size: 14px;
+			padding: 0 5px;
+			height: auto;
+			overflow: visible;
+			text-overflow: inherit;
+			white-space: inherit;
+			word-break: break-all;
+		}
+
+		.out-scatter-num .local-input {
+			width: 40%;
+			height: 25px;
+			float: left;
+		}
+
+		.out-scatter-num .local-ok button {
+			height: 25px;
+			border: 0;
+			color: #FFFFFF;
+			background-color: #0a93e3;
+			border-radius: 3px;
+			padding: 2px;
+			margin-left: 10px;
+			width: 100%;
+		}
+
+		.out-scatter-num .layui-form-label {
+			width: 25%;
+		}
+
+		.out-scatter-num .layui-input-block {
+			width: 100%;
+			margin-left: -10px;
+		}
+
+		.out-scatter-num .layui-input-block .layui-input {
+			padding-left: 5px;
+		}
+
+		.out-scatter-num .local-ok {
+			width: 20%;
+			height: 25px;
+			float: left;
+			margin-left: 0;
+		}
+
+		.out-scatter-num .local-ok button {
+			margin-left: 0;
+		}
+
+		.layout-tab-page {
+			height: auto;
+		}
+
+		.cut-line {
+			margin-top: 20px;
+		}
+	</style>
+	<link rel="stylesheet" href="../../css/adapter.css" />
+</head>
+
+<body>
+	<div class="main-content">
+		<div class="layout-title">
+			<table>
+				<tr>
+					<td class="img-back"><a href="../../index.html"><img src="../../assets/back.jpg"></a></td>
+					<td class="title-text">库存盘点</td>
+					<td class="title-menu-icon"><img id="menuImg" src="../../assets/menu.jpg"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="layout-sub-content">
+			<div id="menuList" class="menu">
+				<ul class="" style="text-align: center;">
+					<li><a href="../../index.html">主页</a></li>
+					<li><a href="../../login.html">重新登录</a></li>
+				</ul>
+			</div>
+
+			<div class="layout-bill-info">
+				<form class="layui-form" style="height: auto;">
+
+					<div id="" class="layui-form-item layout-dropdownlist">
+						<label class="layui-form-label" lang>盘点仓库：</label>
+						<div class="layui-input-block">
+							<select name="WareHouseId" id="WareHouseId" lay-verify="required" lay-filter="WareHouseId"
+								lay-search>
+								<option value=""></option>
+							</select>
+							<img src="../../assets/down_arraw.png">
+						</div>
+					</div>
+
+
+					<div class="layui-form-item layout-dropdownlist">
+						<label class="layui-form-label" lang>盘点单：</label>
+						<div class="layui-input-block" id="selectDiv">
+							<select id="bar" lay-filter="getbar" lay-search>
+								<option value=""></option>
+							</select>
+							<img src="../../assets/down_arraw.png">
+						</div>
+					</div>
+					<div id="layout-pallet" class="layui-form-item layout-input">
+						<label class="layui-form-label">托盘条码：</label>
+						<div class="layui-input-block">
+							<input id="STOCKCODE" type="text" lay-verify="stock" placeholder="请扫描托盘条码"
+								autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layout-tab-page">
+						<table id="outHalf" class="layout-tab-content" hidden>
+							<tr>
+								<td>
+									<div id="layout-boxcode" class="layui-form-item layout-input">
+										<label class="layui-form-label">外箱条码：</label>
+										<div class="layui-input-block">
+											<input id="BOXCODE" type="text" placeholder="请扫描外箱条码" autocomplete="off"
+												class="layui-input">
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+						<div style="text-align: right;margin-top: 10px;">
+							<div class="cut-line">
+								<img src="../../assets/fengexian.png">
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="div-tbl-title">
+				<table border="0" style="width: 100%;">
+					<tr>
+						<td>
+							<span style="width: 40%;">
+								托盘号
+							</span>
+							<input id="palletCode" type="text" disabled lay-verify="required" autocomplete="off"
+								style="background-color: #FFFFFF;width: 60%;margin-left: -10px;">
+						</td>
+						<td>
+							<span style="color: red;">
+								箱子数量：
+							</span>
+							<input id="boxNum" type="text" disabled lay-verify="required" autocomplete="off"
+								style="margin-left: -8px;background-color: #FFFFFF;">
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="layout-tbl-paging">
+				<table id="tableBoxList" lay-filter="tableBoxList" class="tbl-box-list" style="table-layout: fixed;"
+					border="" cellspacing="" cellpadding="">
+					<tr>
+						<th>箱 码</th>
+						<th>物料<br>名称</th>
+						<th>批次号</th>
+						<th>箱内<br>数量</th>
+						<th>实际<br>数量</th>
+					</tr>
+					<tr id="boxCell" style="display: none; width: 45px;">
+						<td name="boxcode" style="width: 45px;">AG000001</td>
+						<td name="name" style="width: 45px;">疫苗名称名称名称</td>
+						<td name="lotsNum" style="width: 45px;">00000001</td>
+						<td name="sysNum" style="width: 45px;">30</td>
+						<td name="factNum" style="width: 20px;">
+							<input type="text" id="myInput" autocomplete="off" class="fact-input">
+						</td>
+					</tr>
+				</table>
+				<!-- 分页 -->
+				<table id="tableBoxPages" class="tbl-box-pages">
+					<tr">
+						<td class="page-prev">上一页</td>
+						<td class="page-num page-num-select">1</td>
+						<td class="page-num">2</td>
+						<td class="page-num">3</td>
+						<td class="page-num">4</td>
+						<td class="page-num">5</td>
+						<td class="page-next">下一页</td>
+						</tr>
+				</table>
+
+			</div>
+		</div>
+		<div class="foot-container">
+			<button id="btnSubmit" class="btn-ok" type="button">确定</button>
+			<button id="btnCancel" class="btn-cancel" type="button">取消</button>
+		</div>
+	</div>
+
+	<script src="../../js/jquery-3.5.1.min.js"></script>
+	<script src="../../layui/layui.js"></script>
+	<script src="../../js/public.js"></script>
+	<script src="../../js/jquery.cookie.js"></script>
+	<script>
+		layui.use(['form', 'jquery', 'table'], function () {
+			var $ = layui.$,
+				form = layui.form,
+				laydate = layui.laydate,
+				table = layui.table,
+				layer = layui.layer;
+			var curPageIndex = 1;
+			var tableData = null;
+
+			let uid = $.cookie('userName');
+
+			searchlist();
+
+			//获取仓库列表
+			function searchlist() {
+				const warehouseParams = {
+					page: 1,
+					pageSize: 200,
+					field: 'createTime',
+					order: 'descending',
+					descStr: 'descending',
+					BillType: 1
+				};
+				sendData(IP + "/wmsBaseWareHouse/page", warehouseParams, 'post', function (res) {
+					const warehouses = (res && res.result && res.result.items) || (res && res.data && res.data.items) || [];
+					if (res.code === 200) {
+						$("#WareHouseId").empty();
+						$("#WareHouseId").append('<option value =""></option>');
+						warehouses.forEach(function (item, index) {
+							const id = item.id ?? item.Id;
+							const name = item.warehouseName ?? item.WarehouseName;
+							if (id === undefined || name === undefined) return;
+							if (index === 0) {
+								$("#WareHouseId").append('<option selected value =' + id + '>' + name +
+									'</option>');
+							} else {
+								$("#WareHouseId").append('<option value =' + id + '>' + name +
+									'</option>');
+							}
+						});
+					}
+					else { //不成功
+						layer.msg(res.msg || res.message || '获取仓库失败', {
+							icon: 2,
+							time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						}, function () { });
+					}
+					form.render('select');
+				});
+			}
+
+
+			// 绑定菜单点击事件
+			$("#menuImg").click(function (e) {
+				e.stopPropagation();
+				$("#menuList").toggle();
+			});
+
+			$('body').click(function () {
+				$("#menuList").hide();
+			});
+
+			// 清空表单数据
+			function clearForm() {
+				$("#STOCKCODE, #BOXCODE, #MaterialCode, #MaterialName, #LotNo, #ImportQty, #qty").val("");
+			}
+
+			// 绑定扫描按钮
+			$('#btnScanBox').click(clearForm);
+
+			// 选择盘点单
+			form.on('select(getbar)', function (data) {
+				getBar(data.value);
+			});
+			
+			function getBar(selectedvalue) {
+
+				if (selectedvalue) {
+					var param = {
+						ImportId: selectedvalue,
+					};
+
+					//获取入库单详情
+					var param = {
+						"ExtractBillCode": selectedvalue
+					}
+
+				} else {
+				}
+			}
+			
+			$("#selectDiv").click(function () {
+				var input = $('select[id="bar"]').next().find('.layui-select-title input')
+				var val = input.val()
+				//先更新一下入库单
+				updateBillList(function (data) {
+					$('select[id="bar"]').next().addClass('layui-form-selected')
+					$('select[id="bar"]').next().find('.layui-select-title input').val(val)
+				})
+			})
+
+			//更新入库单
+			function updateBillList(callback) {
+				var input = $('select[id="bar"]').next().find('.layui-select-title input')
+				var val = input.val()
+				$("#bar").empty()
+				$("#bar").append('<option value =>' + '</option>');
+				form.render('select');
+
+				let warehouseId = $('#WareHouseId').val();
+				if (!warehouseId) {
+					return
+				}
+
+				var param = {
+					warehouseId: warehouseId
+				};
+				console.log(IP);
+				sendData(IP + "/wmsPda/getWmsStockCheckList", param, 'post', function (res) {
+					const legacy = res.result || {};
+					if (res.code === 200 && legacy.code === 1) { //成功
+						const orders = legacy.data || [];
+						for (var i = 0; i < orders.length; i++) {
+							const order = orders[i];
+							const id = order.Id ?? order.id ?? order.CheckBillCode;
+							const billCode = order.CheckBillCode ?? order.checkBillCode ?? id;
+							$("#bar").append('<option value =' + id + '>' + billCode + '</option>');
+						}
+						form.render('select');
+						if (!val) {
+							$('#bar').siblings("div.layui-form-select").find('dl').find('.layui-select-tips').addClass('layui-this')
+						} else {
+							var sel = 'dd[lay-value=' + val + ']';
+							$('#bar').siblings("div.layui-form-select").find('dl').find(sel).addClass('layui-this')
+						}
+						callback(legacy.data || [])
+					} else { //不成功
+						const errMsg = res.msg || res.message || legacy.msg || '获取盘点单失败';
+						layer.msg(errMsg, { icon: 2, time: 2000 });
+					}
+				});
+			}
+			
+			// 刷新表格
+			/*function refreshTable() {
+				$("#tableBoxList tr:not(:first)").remove(); // 清空已有数据
+
+				if (!tableData || tableData.length === 0) {
+					$("#boxNum").val(0);
+					layer.msg("无数据", { icon: 2, time: 2000 });
+					return;
+				}
+
+				$("#palletCode").val($.cookie('stockCode'));
+				$("#boxNum").val(tableData.length);
+
+				tableData.forEach((item, index) => {
+					let tr = $("#boxCell").clone().removeAttr("id").show();
+					tr.attr("index", index + 1);
+					tr.find("[name='boxcode']").text(item.BoxCode);
+					tr.find("[name='name']").text(item.MaterialName);
+					tr.find("[name='lotsNum']").text(item.StockLotNo);
+					tr.find("[name='sysNum']").text(item.StockQuantityttt);
+
+					let input = tr.find("[name='factNum'] input").val(item.RealQuantity);
+					input.attr("boxcode", item.BoxCode).blur(() => {
+						let item = tableData.find(i => i.BoxCode === input.attr("boxcode"));
+						item.RealQuantity = input.val() || item.StockQuantityttt;
+					});
+
+					$("#tableBoxList").append(tr);
+				});
+			}*/
+			
+			function refreshTable() {
+				//先清空一下箱子列表
+				let trs = $("#tableBoxList tr")
+				let len = trs.length
+				for (i = len - 1; i >= 2; i--) {
+					trs[i].remove();
+				}
+				//设置托盘号
+				$("#palletCode").val($.cookie('stockCode'))
+				var param = {
+					checkBillCode: $("#bar").val(),
+					stockCode: $("#STOCKCODE").val(),
+					boxCode: $("#BOXCODE").val(),
+					status: "2"
+				};
+				sendData(IP + "/wmsPda/getStockCheckInfo", param, 'post', function (res) {
+					const legacy = res.result || {};
+					if (res.code === 200 && legacy.code === 1) { //成功
+						var list = legacy.data || [];
+						tableData = list;
+						var arrTrs = new Array()
+						let idx = 0
+						for (var i in list) {
+							var tr = $("#boxCell").eq(0).clone();
+							tr.appendTo("#tableBoxList");
+							tr.attr('id', list[i].Id ?? list[i].id ?? list[i].BoxCode)
+							idx++;
+							tr.attr('index', idx)
+							tr.find("[name='boxcode']").text(list[i].BoxCode ?? list[i].boxCode ?? '');
+							tr.find("[name='name']").text(list[i].MaterialName ?? list[i].materialName ?? '');
+							tr.find("[name='lotsNum']").text(list[i].LotNo ?? list[i].lotNo ?? '');
+							tr.find("[name='sysNum']").text(list[i].Qty ?? list[i].qty ?? 0);
+							
+							let input = tr.find("[name='factNum'] input").val(list[i].RealQuantity ?? list[i].realQuantity ?? '');
+							input.val(list[i].RealQuantity ?? list[i].realQuantity ?? '')
+							input.attr('boxcode', list[i].BoxCode ?? list[i].boxCode)
+							input.blur(function () {
+								console.log("实际数量失去焦点")
+								// let item = getBoxItem(input.attr('boxcode'))
+
+								if (input.val() == "") {
+									input.val(item.RealQuantity)
+								} else {
+									console.log("实际数量为：" + input.val())
+									console.log("boxcode is "+input.attr('boxcode'))
+									// item.RealQuantity = input.val()
+									list[i].realQuantity=input.val()
+								}
+								// setBoxRealQty(item)
+							})
+							tr.find("td[name='del']").click(function () {
+								var elem = $(this).parent()
+								var boxcode = elem.attr('id')
+								layer.alert("确定要从托盘上删除这个物料吗？<br>", {
+									icon: 2,
+									time: 0, //2秒关闭（如果不配置，默认是3秒）
+									btn: ['删除', '取消'],
+									yes: function (index) {
+										layer.close(index)
+										var deleteParam = {
+											boxId: boxcode,
+											user: uid
+										};
+										sendData(IP + "/wmsPda/delStockSoltBoxInfo", deleteParam, 'post', function (res) {
+											if (res.code === 200 && res.result && res.result.success !== false) { //成功
+												$("#MaterialCode").val("");
+												$("#LotNo").val("");
+												$("#MaterialName").val("");
+												$("#ImportQuantity").val("");
+												$("#ImportFactQuantity").val("");
+												$("#qty").val("");
+												$("#STOCKCODE").val("");
+												elem.remove()
+												refreshTable();
+											} else { //不成功
+												const errMsg = res.msg || res.message || (res.result && res.result.message) || '删除失败';
+												layer.msg(errMsg, {
+													icon: 2,
+													time: 2000 //2秒关闭（如果不配置，默认是3秒）
+												}, function () { });
+											}
+										});
+									}
+								})
+							})
+							tr.show();
+							arrTrs[i] = tr
+						}
+						//设置分页
+						setPages(1, list.length)
+					} else { //不成功
+						$("#boxNum").val(0)
+						setPages(1, 0)
+						//const errMsg = res.msg || res.message || legacy.msg || '获取盘点明细失败';
+						//layer.msg(errMsg, { icon: 2, time: 2000 });
+					}
+					$("#boxCnt").html("当前托盘上的箱子数量：" + (tableData ? tableData.length : 0))
+					$("#boxNum").val(legacy.count)
+				});
+			}
+
+			function getBoxItem(boxcode) {
+				for (let i in tableData) {
+					if (tableData[i].boxCode == boxcode) {
+						return tableData[i]
+					}
+				}
+				return null
+			}
+
+			function setBoxRealQty(item) {
+				for (let i in tableData) {
+					if (tableData[i].boxCode === item.boxCode) {
+						tableData[i].realQuantity = item.realQuantity;
+						//return;
+					}
+				}
+
+				//console.log("未找到要设置实际数量的箱子")
+			}
+
+			//设置分页
+			function setPages(pageIndex, boxNum) {
+				if (boxNum <= 0) {
+					//列表为空，隐藏分页页码
+					$("#tableBoxPages").hide()
+					return
+				}
+				let pageNum = Math.floor(boxNum / 10);
+				if (boxNum % 10 > 0) {
+					pageNum += 1;
+				}
+				$("#tableBoxPages").find("tr").remove()
+				let table = $("#tableBoxPages")
+				$("<tr></tr>").appendTo("#tableBoxPages")
+				$("<td id='prevPage' class='page-prev'>上一页</td>").appendTo("#tableBoxPages tr")
+				$("#tableBoxPages tr").eq(0).find("td[id^='prevPage']").click(function () {
+					onClickPrevPage()
+				})
+				for (i = 1; i < pageNum + 1; i++) {
+					$("<td class='page-num'>" + i + "</td>").appendTo("#tableBoxPages tr")
+				}
+				$("<td id='nextPage' class='page-next'>下一页</td>").appendTo("#tableBoxPages tr")
+				$("#tableBoxPages tr").eq(0).find("td[id^='nextPage']").click(function () {
+					onClickNextPage()
+				})
+				$("#tableBoxPages").show()
+				setCurPage(1)
+			}
+			//设置当前分页
+			function setCurPage(pageIndex) {
+				let totalTrNum = $("#tableBoxList tr").length
+				if (totalTrNum <= 2) {
+					return
+				}
+				let pageNum = getBoxPageNum()
+				if (pageIndex > pageNum) {
+					return
+				}
+				let startIndex = (pageIndex - 1) * 10 + 1
+				let n = totalTrNum - startIndex
+				let endIndex = 0
+				if (n > 9) {
+					endIndex = startIndex + 9
+				} else {
+					endIndex = startIndex + n
+				}
+				let trs = $("#tableBoxList tr")
+				let d = 0
+				for (let i = 2; i < trs.length; i++) {
+					let t = trs.eq(i)
+					d = t.attr('index')
+					if (d >= startIndex && d <= endIndex) {
+						//显示行
+						t.show()
+					} else {
+						//隐藏行
+						t.hide()
+					}
+				}
+				curPageIndex = pageIndex;
+				let ptr = $("#tableBoxPages tr")
+				for (let i = 1; i < pageNum + 1; i++) {
+					ptr.eq(0).find("td").eq(i).removeClass("page-num-select")
+					if (i == curPageIndex) {
+						ptr.eq(0).find("td").eq(i).addClass("page-num-select")
+					}
+				}
+			}
+			function onClickPrevPage() {
+				if (curPageIndex == 1) {
+					return
+				}
+				setCurPage(curPageIndex - 1)
+			}
+			function onClickNextPage() {
+				let n = getBoxPageNum()
+				if (curPageIndex == n) {
+					return
+				}
+				setCurPage(curPageIndex + 1)
+			}
+			function getBoxPageNum() {
+				let num = $("#tableBoxList tr").length
+				if (num <= 2) {
+					return 0
+				}
+
+				let pageNum = Math.floor(num / 10);
+				if (num % 10 > 0) {
+					pageNum += 1;
+				}
+
+				return pageNum
+			}
+
+			//检查载具状态
+			function checkPalletStat() {
+
+				var param = {
+					palletCode: $("#STOCKCODE").val()
+				}
+				sendData(IP + "/wmsPda/getPalnoStatus", param, 'post', function (res) {
+					if (res.code === 200 && res.result && res.result.valid) { //成功
+						$.cookie('stockCode', $("#STOCKCODE").val());
+						$("#STOCKCODE").val() == "";
+						console.log("checkPalletStat");
+						refreshTable()
+						$("#BOXCODE").focus();
+					} else { //不成功
+						const errMsg = res.msg || res.message || (res.result && res.result.message) || '载具无效';
+						layer.msg(errMsg, { icon: 2, time: 2000 });
+					}
+				});
+			}
+
+
+			$("#STOCKCODE").keydown(function (e) {
+				if (e.keyCode === 13) {
+					if ($("#STOCKCODE").val() == "") {
+						return
+					}
+					//检查载具状态
+					checkPalletStat();
+				}
+			});
+			//$("#STOCKCODE").blur(function () {				
+					//if ($("#STOCKCODE").val() == "") {
+						//return
+					//}
+					//检查载具状态
+					//checkPalletStat();				
+			//});
+			$("#BOXCODE").keydown(function (e) {
+				if (e.keyCode === 13) {
+					if ($("#BOXCODE").val().replace(/[, ]/g, '') == "") {
+						return
+					}
+
+					checkBoxInfo()
+				}
+			});
+
+			function checkBoxInfo() {
+
+				var param = {
+					checkBillCode: $("#bar").val(),
+					stockCode: $("#STOCKCODE").val(),
+					boxCode: "",
+					status: "1"
+				};
+				sendData(IP + "/wmsPda/getStockCheckInfo", param, 'post', function (res) {
+					const legacy = res.result || {};
+					if (res.code === 200 && legacy.code === 1) {
+						refreshTable();
+						//checkBoxInfo();
+					} else {
+						const errMsg = res.msg || res.message || legacy.msg || '扫描失败';
+						layer.msg(errMsg, { icon: 2, time: 2000 });
+					}
+				});
+			}
+
+			// 提交数据
+			$("#btnSubmit").click(function () {				
+				// console.log(tableData,"--------------------------tableData");
+				var param = {
+					billCode: $("#bar").val(),
+					stockCode: $("#STOCKCODE").val(),
+					options: tableData
+				};
+				// console.log(param)
+				sendData(IP + "/wmsPda/updateStockCheckInfo", param, 'post', function (res) {
+					if (res.code === 200 && res.result && res.result.success !== false) {
+						const okMsg = res.result.message || res.msg || '提交成功';
+						layer.msg(okMsg, { icon: 1, time: 2000 });
+						tableData = null;
+						clearForm();
+						refreshTable();
+					} else {
+						const errMsg = res.msg || res.message || (res.result && res.result.message) || '提交失败';
+						layer.msg(errMsg, { icon: 2, time: 2000 });
+					}
+				});
+			});
+
+			// 取消按钮
+			$("#btnCancel").click(function () {
+				tableData = null;
+				clearForm();
+				refreshTable();
+			});
+		});
+
+	</script>
+</body>
+
+</html>

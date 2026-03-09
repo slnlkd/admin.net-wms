@@ -1,0 +1,137 @@
+@charset "utf-8";
+// 公共样式
+.fl{float: left;}
+.fr{float: right;}
+.clearfix:after {visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
+body {
+  font-family: "黑体";
+  background-color: #fff;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  font-size: 0.56rem;
+  line-height: 0.96rem;
+  width: 15rem;
+}
+.layui-btn{
+    height: 1.52rem;
+    line-height: 1.52rem;
+    padding: 0 0.72rem;
+    font-size: 0.56rem;
+}
+.layui-form-item{
+    margin-bottom: 0.6rem;
+}
+.layui-form-label{
+    padding: 0.36rem 0.6rem;
+    line-height: 0.8rem;
+    font-size: 0.56rem;
+    width: 3.2rem;
+}
+.layui-input-block{
+    margin-left: 4.4rem;
+    min-height: 1.44rem;
+
+    .layui-input, .layui-textarea{
+        font-size: 0.56rem;
+        height: 1.52rem;
+        padding-left: 0.4rem;
+    }
+}
+.layui-form-select .layui-edge{
+    margin-top: -0.12rem;
+    border-width: 0.24rem;
+    right: 0.4rem;
+}
+.layui-form-select dl{
+    top: 1.68rem;
+    padding: 0.2rem 0;
+    max-height: 12rem;
+}
+.layui-form-select dl dd, .layui-form-select dl dt {
+    padding: 0 0.4rem;
+    line-height: 1.44rem;
+}
+// 导航
+.header{
+    width: 100%; 
+    height: 2.4rem; 
+    box-shadow: 0 3px 3px 0 #ccc; 
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+
+    .title{
+        font-size: 0.8rem;
+        flex: 1;
+        font-weight: 700;
+        text-align: center;
+    }
+    i{
+        font-size: 1.2rem;
+        margin-right: 0.4rem;
+    }
+    .nav_list{
+        position: absolute;
+        top: 2.4rem;
+        right: 0;
+        border: 1px solid #d3d3d3;
+        display: none;
+        z-index: 999;
+        width: 6rem;
+        text-align: center;
+        padding: 0.4rem;
+        box-sizing: border-box;
+        background-color: #fff;
+
+        li{
+            a{
+                width: 100%;
+                display: inline-block;
+                height: 1.6rem;
+                line-height: 1.6rem;
+                font-size: 0.64rem;
+            }
+        }
+    }
+}
+// 首页
+.login{
+    padding: 0 0.8rem;
+    box-sizing: border-box;
+    .login_title{
+        font-size: 0.8rem;
+        margin-top: 4rem;
+        text-align: center;
+        font-weight: 700;
+    }
+    .login_form{
+        margin-top: 0.8rem;
+        .layui-form-item{
+            .layui-form-label{
+                width: 2.4rem;
+            }
+        }
+    }
+    .login_name{
+        font-size: 0.64rem;
+        margin-top: 4rem;
+        text-align: center;
+        color: #bcb6b6;
+    }
+}
+// 主页
+.index{
+    .main{
+        display: flex;
+        justify-content:center;
+        margin-top: 2rem;
+    }
+}
+.scan_enter{
+    .main{
+        .layui-form{
+            padding: 0.8rem;
+            box-sizing: border-box;
+        }
+    }
+}

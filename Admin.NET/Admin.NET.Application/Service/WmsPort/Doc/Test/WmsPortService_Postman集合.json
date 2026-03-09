@@ -1,0 +1,1147 @@
+{
+	"info": {
+		"_postman_id": "wmsport-complete-test-collection-v2",
+		"name": "WmsPortService完整测试集 v2.0（真实数据版）",
+		"description": "WmsPortService所有接口的全业务场景测试集合 - 使用数据库真实数据\n\n包含7个接口，共45+测试场景\n- CreateOrder: 入库单据下发\n- CreateImportOrder: 入库申请\n- CreateImportOrder2: 二次入库申请\n- TaskFeedback: 任务反馈\n- GenerateGroupPallets: 组托反馈\n- KBackConfirm: 空载具组盘\n- AddOutPalno: 空载具申请\n\n每个接口包含成功场景和失败场景的完整测试用例。\n所有测试数据均来自数据库真实查询结果。",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "wmsport-api-tester"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5005",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "your-token-here",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. CreateOrder - 入库单据下发",
+			"item": [
+				{
+					"name": "✅ 正常场景-有效的入库单据下发",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Id\": 763345946497094,\n  \"ReceivingDock\": \"1\",\n  \"NetWeight\": \"1111\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateOrder"]
+						},
+						"description": "使用有效的入库单据明细ID进行下发"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码为200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"响应包含Success字段\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('Success');",
+									"});",
+									"",
+									"pm.test(\"Success为true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Data包含订单信息\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Data).to.have.property('BillCode');",
+									"    pm.expect(jsonData.Data).to.have.property('GoodCode');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "✅ 正常场景-不同入库口",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Id\": 763345946497096,\n  \"ReceivingDock\": \"2\",\n  \"NetWeight\": \"33\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateOrder"]
+						},
+						"description": "测试不同的入库口配置"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-缺少入库口",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Id\": 763345946501189,\n  \"ReceivingDock\": \"\",\n  \"NetWeight\": \"33\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateOrder"]
+						},
+						"description": "ReceivingDock 参数为空或null"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Success为false\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Success).to.be.false;",
+									"});",
+									"",
+									"pm.test(\"Message包含错误提示\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Message).to.include('入库口');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "❌ 失败场景-缺少皮重",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Id\": 763345946501190,\n  \"ReceivingDock\": \"2\",\n  \"NetWeight\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateOrder"]
+						},
+						"description": "NetWeight 参数为空或null"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-无效的单据ID",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Id\": 9999999999999999,\n  \"ReceivingDock\": \"1\",\n  \"NetWeight\": \"50.5\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateOrder"]
+						},
+						"description": "使用不存在的入库单据明细ID"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-单据已执行",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Id\": 1450345932570664963,\n  \"ReceivingDock\": \"RK01\",\n  \"NetWeight\": \"50.5\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateOrder"]
+						},
+						"description": "单据状态为 '02' 或 '03'，不允许重复下发\n\n注意：需要预先将此单据状态设置为 '02' 或 '03'"
+					},
+					"response": []
+				}
+			],
+			"description": "入库单据下发接口的所有测试场景"
+		},
+		{
+			"name": "2. CreateImportOrder - 入库申请",
+			"item": [
+				{
+					"name": "✅ 正常场景-立体库入库自动分配库位",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"A\",\n  \"StockCode\": \"TP2024001\",\n  \"LaneWayCode\": \"\",\n  \"Location\": \"A263610\",\n  \"WarehouseName\": \"力诺制药\",\n  \"Type\": \"3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "托盘申请入库到立体库，系统自动分配最优库位"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码为200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Code为1(成功)\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Code).to.eql(1);",
+									"});",
+									"",
+									"pm.test(\"Data包含任务信息\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Data).to.be.an('array');",
+									"    pm.expect(jsonData.Data.length).to.be.above(0);",
+									"    pm.expect(jsonData.Data[0]).to.have.property('TaskNo');",
+									"    pm.expect(jsonData.Data[0]).to.have.property('TaskMode');",
+									"    pm.expect(jsonData.Data[0].TaskMode).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "✅ 正常场景-立体库入库指定巷道",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"A\",\n  \"StockCode\": \"TP2024004\",\n  \"LaneWayCode\": \"10272\",\n  \"Location\": \"A263610\",\n  \"WarehouseName\": \"力诺制药\",\n  \"Type\": \"3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "指定巷道编码进行入库申请"
+					},
+					"response": []
+				},
+				{
+					"name": "✅ 正常场景-立体库低货位入库",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"A\",\n  \"StockCode\": \"TP2024006\",\n  \"LaneWayCode\": \"\",\n  \"Location\": \"A264110\",\n  \"WarehouseName\": \"力诺制药\",\n  \"Type\": \"3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "Type=3 指定低货位入库"
+					},
+					"response": []
+				},
+				{
+					"name": "✅ 正常场景-立体库高货位入库",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"A\",\n  \"StockCode\": \"TP2024007\",\n  \"LaneWayCode\": \"\",\n  \"Location\": \"A253610\",\n  \"WarehouseName\": \"力诺制药\",\n  \"Type\": \"4\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "Type=4 指定高货位入库"
+					},
+					"response": []
+				},
+				{
+					"name": "✅ 正常场景-平库入库",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"A\",\n  \"StockCode\": \"TP2024008\",\n  \"LaneWayCode\": \"\",\n  \"Location\": \"A254110\",\n  \"WarehouseName\": \"力诺制药\",\n  \"Type\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "平库类型仓库的入库申请"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-托盘不存在",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"A\",\n  \"StockCode\": \"TP9999999\",\n  \"LaneWayCode\": \"\",\n  \"Location\": \"A263610\",\n  \"WarehouseName\": \"力诺制药\",\n  \"Type\": \"3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "使用不存在的托盘编码"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Code为0(失败)\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Code).to.eql(0);",
+									"});",
+									"",
+									"pm.test(\"Msg提示托盘不存在\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Msg).to.include('托盘');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "❌ 失败场景-托盘已在使用中",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"A\",\n  \"StockCode\": \"TP2024011\",\n  \"LaneWayCode\": \"\",\n  \"Location\": \"A263610\",\n  \"WarehouseName\": \"力诺制药\",\n  \"Type\": \"3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "托盘状态为使用中，不允许重复申请入库\n\n注意：需要托盘已经在库或正在使用"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-托盘上无物料",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"A\",\n  \"StockCode\": \"TP2024010\",\n  \"LaneWayCode\": \"\",\n  \"Location\": \"A263610\",\n  \"WarehouseName\": \"力诺制药\",\n  \"Type\": \"3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "托盘未组托，没有箱码明细\n\n注意：需要托盘存在但没有箱码明细"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-无可用库位",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"A\",\n  \"StockCode\": \"TP2024012\",\n  \"LaneWayCode\": \"\",\n  \"Location\": \"A263610\",\n  \"WarehouseName\": \"力诺制药\",\n  \"Type\": \"3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "仓库所有库位已满或锁定\n\n注意：需要预先占满所有库位"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-仓库编码无效",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"HouseCode\": \"ZZ\",\n  \"StockCode\": \"TP2024013\",\n  \"LaneWayCode\": \"\",\n  \"Location\": \"A263610\",\n  \"WarehouseName\": \"未知仓库\",\n  \"Type\": \"3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder"]
+						},
+						"description": "使用不存在的仓库编码"
+					},
+					"response": []
+				}
+			],
+			"description": "入库申请接口的所有测试场景"
+		},
+		{
+			"name": "3. CreateImportOrder2 - 二次入库申请",
+			"item": [
+				{
+					"name": "✅ 正常场景-指定库位A面入库",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"StockCode\": \"TP2024001\",\n  \"IsAB\": \"A\",\n  \"LaneWayId\": \"1300000003078\",\n  \"SlotCode\": \"A263210\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder2"]
+						},
+						"description": "指定具体库位进行二次入库，A面"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Code为1(成功)\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Code).to.eql(1);",
+									"});",
+									"",
+									"pm.test(\"TaskEnd为指定库位\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Data[0].TaskEnd).to.eql('A-01-02-03');",
+									"});",
+									"",
+									"pm.test(\"IsAB为A\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Data[0].IsAB).to.eql('A');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "✅ 正常场景-指定库位B面入库",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"StockCode\": \"TP2024004\",\n  \"IsAB\": \"B\",\n  \"LaneWayId\": \"1300000003078\",\n  \"SlotCode\": \"A263310\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder2"]
+						},
+						"description": "指定具体库位进行二次入库，B面"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-托盘不存在",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"StockCode\": \"TP9999999\",\n  \"IsAB\": \"A\",\n  \"LaneWayId\": \"1300000003078\",\n  \"SlotCode\": \"A263410\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder2"]
+						},
+						"description": "使用不存在的托盘编码"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-库位不存在",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"StockCode\": \"TP2024006\",\n  \"IsAB\": \"A\",\n  \"LaneWayId\": \"1300000003078\",\n  \"SlotCode\": \"X999999\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder2"]
+						},
+						"description": "使用不存在的库位编码"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-库位已被占用",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"StockCode\": \"TP2024007\",\n  \"IsAB\": \"A\",\n  \"LaneWayId\": \"1300000003078\",\n  \"SlotCode\": \"A263510\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/CreateImportOrder2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "CreateImportOrder2"]
+						},
+						"description": "指定的库位已有货物\n\n注意：需要预先占用此库位"
+					},
+					"response": []
+				}
+			],
+			"description": "二次入库申请接口的所有测试场景"
+		},
+		{
+			"name": "4. TaskFeedback - 任务反馈",
+			"item": [
+				{
+					"name": "✅ 正常场景-入库任务完成",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TaskNo\": \"RK20250129004\",\n  \"Code\": \"1\",\n  \"TaskType\": \"0\",\n  \"StockCode\": \"TP2024012\",\n  \"TaskEnd\": \"B-01-02-02\",\n  \"TaskBegin\": \"RK02\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/TaskFeedback",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "TaskFeedback"]
+						},
+						"description": "WCS反馈入库任务已完成"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Code为1(成功)\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Code).to.eql(1);",
+									"});",
+									"",
+									"pm.test(\"Msg包含成功提示\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Msg).to.include('成功');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "✅ 正常场景-入库任务取消",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TaskNo\": \"RK20250129003\",\n  \"Code\": \"2\",\n  \"TaskType\": \"0\",\n  \"StockCode\": \"TP2024011\",\n  \"TaskEnd\": \"B-01-02-01\",\n  \"TaskBegin\": \"RK02\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/TaskFeedback",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "TaskFeedback"]
+						},
+						"description": "WCS反馈入库任务已取消"
+					},
+					"response": []
+				},
+				{
+					"name": "✅ 正常场景-出库任务完成",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TaskNo\": \"CK20250129001\",\n  \"Code\": \"1\",\n  \"TaskType\": \"1\",\n  \"StockCode\": \"TP2024012\",\n  \"TaskBegin\": \"B-01-02-02\",\n  \"TaskEnd\": \"A263610\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/TaskFeedback",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "TaskFeedback"]
+						},
+						"description": "WCS反馈出库任务已完成"
+					},
+					"response": []
+				},
+				{
+					"name": "✅ 正常场景-出库任务取消",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TaskNo\": \"CK20250129002\",\n  \"Code\": \"2\",\n  \"TaskType\": \"1\",\n  \"StockCode\": \"TP2024011\",\n  \"TaskBegin\": \"B-01-02-01\",\n  \"TaskEnd\": \"A264110\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/TaskFeedback",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "TaskFeedback"]
+						},
+						"description": "WCS反馈出库任务已取消"
+					},
+					"response": []
+				},
+				{
+					"name": "✅ 正常场景-移库任务完成",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TaskNo\": \"YK20250129001\",\n  \"Code\": \"1\",\n  \"TaskType\": \"3\",\n  \"StockCode\": \"TP2024012\",\n  \"TaskBegin\": \"B-01-02-02\",\n  \"TaskEnd\": \"A263210\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/TaskFeedback",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "TaskFeedback"]
+						},
+						"description": "WCS反馈移库任务已完成"
+					},
+					"response": []
+				},
+				{
+					"name": "✅ 正常场景-移库任务取消",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TaskNo\": \"YK20250129002\",\n  \"Code\": \"2\",\n  \"TaskType\": \"3\",\n  \"StockCode\": \"TP2024011\",\n  \"TaskBegin\": \"B-01-02-01\",\n  \"TaskEnd\": \"A263310\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/TaskFeedback",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "TaskFeedback"]
+						},
+						"description": "WCS反馈移库任务已取消"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-任务号不存在",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TaskNo\": \"XX99999999999\",\n  \"Code\": \"1\",\n  \"TaskType\": \"0\",\n  \"StockCode\": \"TP2024012\",\n  \"TaskEnd\": \"B-01-02-02\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/TaskFeedback",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "TaskFeedback"]
+						},
+						"description": "使用不存在的任务号"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-无效的TaskType",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TaskNo\": \"RK20250129004\",\n  \"Code\": \"1\",\n  \"TaskType\": \"9\",\n  \"StockCode\": \"TP2024012\",\n  \"TaskEnd\": \"B-01-02-02\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/TaskFeedback",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "TaskFeedback"]
+						},
+						"description": "使用不支持的任务类型"
+					},
+					"response": []
+				}
+			],
+			"description": "任务反馈接口的所有测试场景"
+		},
+		{
+			"name": "5. GenerateGroupPallets - 组托反馈",
+			"item": [
+				{
+					"name": "✅ 正常场景-单个箱码组托",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"VehicleCode\": \"TP2024001\",\n  \"BillCode\": \"RKS20260116000002\",\n  \"List\": [\n    {\n      \"BoxCode\": \"BOX20260121001\",\n      \"Qty\": 100,\n      \"MaterialCode\": \"M001\",\n      \"ProductionDate\": \"2026-01-21T00:00:00\",\n      \"ValidateDay\": \"2027-01-21T00:00:00\",\n      \"LotNo\": \"LOT202601\",\n      \"BulkTank\": 1,\n      \"SamplingDate\": \"2026-01-21T08:00:00\",\n      \"StaffCode\": \"EMP001\",\n      \"StaffName\": \"张三\",\n      \"InspectionStatus\": \"1\",\n      \"Weight\": 10.5,\n      \"ExtractStatus\": \"1\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/GenerateGroupPallets",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "GenerateGroupPallets"]
+						},
+						"description": "将单个箱码绑定到托盘"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Success为true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Message包含成功提示\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Message).to.include('成功');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "✅ 正常场景-批量组托多个箱码",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"VehicleCode\": \"TP2024004\",\n  \"BillCode\": \"RKS20260116000002\",\n  \"List\": [\n    {\n      \"BoxCode\": \"BOX20260121002\",\n      \"Qty\": 100,\n      \"MaterialCode\": \"M002\",\n      \"ProductionDate\": \"2026-01-21T00:00:00\",\n      \"ValidateDay\": \"2027-01-21T00:00:00\",\n      \"LotNo\": \"LOT202602\",\n      \"BulkTank\": 1,\n      \"SamplingDate\": \"2026-01-21T08:00:00\",\n      \"StaffCode\": \"EMP001\",\n      \"StaffName\": \"张三\",\n      \"InspectionStatus\": \"1\",\n      \"Weight\": 10.5,\n      \"ExtractStatus\": \"1\"\n    },\n    {\n      \"BoxCode\": \"BOX20260121003\",\n      \"Qty\": 100,\n      \"MaterialCode\": \"M003\",\n      \"ProductionDate\": \"2026-01-21T00:00:00\",\n      \"ValidateDay\": \"2027-01-21T00:00:00\",\n      \"LotNo\": \"LOT202602\",\n      \"BulkTank\": 1,\n      \"SamplingDate\": \"2026-01-21T08:00:00\",\n      \"StaffCode\": \"EMP001\",\n      \"StaffName\": \"张三\",\n      \"InspectionStatus\": \"1\",\n      \"Weight\": 10.5,\n      \"ExtractStatus\": \"1\"\n    },\n    {\n      \"BoxCode\": \"BOX20260121004\",\n      \"Qty\": 100,\n      \"MaterialCode\": \"M004\",\n      \"ProductionDate\": \"2026-01-21T00:00:00\",\n      \"ValidateDay\": \"2027-01-21T00:00:00\",\n      \"LotNo\": \"LOT202602\",\n      \"BulkTank\": 1,\n      \"SamplingDate\": \"2026-01-21T08:00:00\",\n      \"StaffCode\": \"EMP001\",\n      \"StaffName\": \"张三\",\n      \"InspectionStatus\": \"1\",\n      \"Weight\": 10.5,\n      \"ExtractStatus\": \"1\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/GenerateGroupPallets",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "GenerateGroupPallets"]
+						},
+						"description": "批量将多个箱码绑定到托盘"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-托盘编码为空",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"VehicleCode\": \"\",\n  \"BillCode\": \"RKS20260116000002\",\n  \"List\": [\n    {\n      \"BoxCode\": \"BOX20260121005\",\n      \"Qty\": 100,\n      \"MaterialCode\": \"M001\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/GenerateGroupPallets",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "GenerateGroupPallets"]
+						},
+						"description": "VehicleCode 参数为空"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-单据编码为空",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"VehicleCode\": \"TP2024006\",\n  \"BillCode\": \"\",\n  \"List\": [\n    {\n      \"BoxCode\": \"BOX20260121006\",\n      \"Qty\": 100,\n      \"MaterialCode\": \"M001\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/GenerateGroupPallets",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "GenerateGroupPallets"]
+						},
+						"description": "BillCode 参数为空"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-箱码列表为空",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"VehicleCode\": \"TP2024007\",\n  \"BillCode\": \"RKS20260116000002\",\n  \"List\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/GenerateGroupPallets",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "GenerateGroupPallets"]
+						},
+						"description": "List 参数为空或长度为0"
+					},
+					"response": []
+				}
+			],
+			"description": "组托反馈接口的所有测试场景"
+		},
+		{
+			"name": "6. KBackConfirm - 空载具组盘",
+			"item": [
+				{
+					"name": "✅ 正常场景-绑定操作",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"PalletCode\": \"TP2024001\",\n  \"Quantity\": 10,\n  \"ActionType\": \"add\",\n  \"UserId\": \"Wcs\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/KBackConfirm",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "KBackConfirm"]
+						},
+						"description": "将空托盘绑定到系统"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Success为true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Success).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "✅ 正常场景-解绑操作",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"PalletCode\": \"TP2024001\",\n  \"Quantity\": 10,\n  \"ActionType\": \"del\",\n  \"UserId\": \"Wcs\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/KBackConfirm",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "KBackConfirm"]
+						},
+						"description": "将空托盘从系统解绑"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-托盘编码为空",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"PalletCode\": \"\",\n  \"Quantity\": 10,\n  \"ActionType\": \"add\",\n  \"UserId\": \"Wcs\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/KBackConfirm",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "KBackConfirm"]
+						},
+						"description": "PalletCode 参数为空"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-数量小于等于0",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"PalletCode\": \"TP2024001\",\n  \"Quantity\": 0,\n  \"ActionType\": \"add\",\n  \"UserId\": \"Wcs\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/KBackConfirm",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "KBackConfirm"]
+						},
+						"description": "Quantity 参数小于等于0"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-无效的ActionType",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"PalletCode\": \"TP2024001\",\n  \"Quantity\": 10,\n  \"ActionType\": \"update\",\n  \"UserId\": \"Wcs\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/KBackConfirm",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "KBackConfirm"]
+						},
+						"description": "ActionType 不是 add 或 del"
+					},
+					"response": []
+				}
+			],
+			"description": "空载具组盘接口的所有测试场景"
+		},
+		{
+			"name": "7. AddOutPalno - 空载具申请",
+			"item": [
+				{
+					"name": "✅ 正常场景-血浆库申请空托",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Num\": 5,\n  \"ExportPort\": \"A263610\",\n  \"HouseCode\": \"A\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/AddOutPalno",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "AddOutPalno"]
+						},
+						"description": "从血浆库申请空托盘"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Success为true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Success).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Tasks包含任务信息\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Tasks).to.be.an('array');",
+									"    pm.expect(jsonData.Tasks.length).to.eql(5);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "✅ 正常场景-原料库申请空托",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Num\": 3,\n  \"ExportPort\": \"A264110\",\n  \"HouseCode\": \"A\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/AddOutPalno",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "AddOutPalno"]
+						},
+						"description": "从原料库申请空托盘"
+					},
+					"response": []
+				},
+				{
+					"name": "✅ 正常场景-申请多个空托",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Num\": 10,\n  \"ExportPort\": \"A253610\",\n  \"HouseCode\": \"A\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/AddOutPalno",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "AddOutPalno"]
+						},
+						"description": "批量申请多个空托盘"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-数量小于等于0",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Num\": 0,\n  \"ExportPort\": \"A263610\",\n  \"HouseCode\": \"A\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/AddOutPalno",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "AddOutPalno"]
+						},
+						"description": "Num 参数小于等于0"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-出库口为空",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Num\": 5,\n  \"ExportPort\": \"\",\n  \"HouseCode\": \"A\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/AddOutPalno",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "AddOutPalno"]
+						},
+						"description": "ExportPort 参数为空"
+					},
+					"response": []
+				},
+				{
+					"name": "❌ 失败场景-仓库类型无效",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Num\": 5,\n  \"ExportPort\": \"A263610\",\n  \"HouseCode\": \"ZZ\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/WmsPort/AddOutPalno",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "WmsPort", "AddOutPalno"]
+						},
+						"description": "HouseCode 参数不是 A 或 B"
+					},
+					"response": []
+				}
+			],
+			"description": "空载具申请接口的所有测试场景"
+		},
+		{
+			"name": "0. 辅助接口",
+			"item": [
+				{
+					"name": "登录获取Token",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Account\": \"superadmin\",\n  \"Password\": \"Admin.NET++010101\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Auth/Login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Auth", "Login"]
+						},
+						"description": "登录系统获取认证Token"
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.Data && jsonData.Data.AccessToken) {",
+									"    pm.environment.set('token', jsonData.Data.AccessToken);",
+									"    console.log('Token已保存到环境变量');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				}
+			],
+			"description": "辅助测试的接口，如登录等"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// 全局前置脚本",
+					"console.log('正在执行请求:', pm.info.requestName);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// 全局测试脚本",
+					"pm.test('响应时间小于5秒', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});",
+					"",
+					"pm.test('响应格式为JSON', function () {",
+					"    pm.response.to.have.header('Content-Type', /application\\/json/);",
+					"});"
+				]
+			}
+		}
+	]
+}

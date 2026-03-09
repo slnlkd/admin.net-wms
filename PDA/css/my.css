@@ -1,0 +1,445 @@
+.menu{
+	background-color: #FFFFFF;
+	width: 50%;
+	height: 80px;
+	float: right;
+	right: 0px;
+	position: absolute;
+	z-index: 999;
+	border: 2px solid #eee;
+	justify-content: center;
+	display: none;
+}
+.menu li{
+	height: 40px;
+	line-height: 40px;
+	font-size: 16px;
+}
+.menu li:hover{
+	background-color:  whitesmoke;
+}
+.menu li a{
+	display: block;
+}
+.layui-form-label{
+	height: 25px;
+	line-height: 25px;
+	padding: 0;
+	text-align: left;
+	font-size: 13px;
+	width: 21%;
+	/* background-color: #00FF00; */
+}
+.layui-input-block{
+	width: 79%;
+	margin-left: 21%;
+	min-height: 25px;
+	/* background-color: #FF0000; */
+}
+.layui-form{
+	height: 25px;
+}
+.layui-form-item{
+	margin-bottom: 6px;
+	height: 25px;
+}
+.layui-form-select .layui-edge {
+	margin-top: -9px;
+}
+.edge-modify {
+	margin-top: -9px;
+}
+.layui-form-select dl {
+	top: 25px;
+	min-width: 98%;
+	left: 8px;
+}
+.layout-tbl-submit{
+	width: 100%;
+	border: none;
+	margin: auto;
+}
+.layout-tbl-submit tr td{
+	height: 36px;
+	width: 50%;
+	border: none;
+	text-align: center;
+}
+.layout-btn {
+	color: #FFFFFF; 
+	width: 98%;
+	height: 36px;
+	border-radius: 5px;
+	border: 0;
+}
+.layout-btn:active {
+	opacity: 0.8;
+}
+.layout-btn-red {
+	background-color: #9f1707;
+}
+.layout-btn-blue {
+	background-color: #0a93e3;
+}
+.box-list-title{
+	text-align: center;
+	line-height: 20px;
+	height: 20px;
+	/* background-color: #009F95; */
+	margin-top: 6px;
+	margin-bottom: 6px;
+	font-size: 18px;
+	color: #5d5f60;
+}
+.tbl-box-list{
+	width: 98%;
+	margin: auto;
+	text-align: center;
+	vertical-align: middle !important;
+	font-size: 16px;
+}
+.tbl-box-list tr th{
+	height: 30px;
+	vertical-align: middle !important;
+	color: #FFFFFF;
+	background-color: indianred
+}
+.tbl-box-list tr td{
+	height: 36px;
+	vertical-align: middle !important;
+}
+.tbl-box-pages{
+	/* width: 460px; */
+	margin: auto;
+	margin-top: 6px;
+	text-align: center;
+	vertical-align: middle !important;
+	font-size: 16px;
+	border: none;
+}
+.tbl-box-pages tr td{
+	/* width: 30px; */
+	height: 30px;
+}
+.page-prev, .page-next{
+	border: 1px solid #BFC4C5;
+	width: 100px;
+}
+.page-next{
+	
+}
+.page-num{
+	width: 30px;
+}
+.page-num-select{
+	background-color: chartreuse;
+}
+body {
+	/* background-color: #00FF00; */
+	font-family: 微软雅黑;
+	font-size: 16px;
+	line-height: 16px;
+}
+
+.main-content {
+	/* 重要：宽度width在adapter.css中定义 */
+	/* width: 320px; */
+	/* background-color: #00F7DE; */
+	height: 300px;
+	margin: auto;
+	/* padding: 0 2% 0 2%; */
+}
+
+.layout-title {
+	background-color: #9f1707;
+	width: 100%;
+	height: 40px;
+}
+.layout-title table {
+	width: 96%;
+	border: none;
+	/* background-color: #007BFF; */
+	margin: auto;
+	height: 40px;
+}
+.layout-title table td {
+	border: none;
+	/* height: 40px; */
+	text-align: center;
+}
+.img-back {
+	/* background-color: #0000FF; */
+	width: 15%;
+	/* background-color: #009E94; */
+}
+.title-menu-icon {
+	width: 15%;
+	
+	/* background-color: #009E94; */
+}
+.title-text {
+	color: #FFFFFF;
+}
+.layout-sub-content {
+	width: 99%;
+	margin:auto;
+	margin-bottom: 0px;
+	/* background-color: #2D93CA; */
+	position: relative;
+}
+.layout-bill-info {
+	width: 100%; 
+	height: 216px;
+	/* background-color: #5FB878; */
+	margin-top: 6px;
+}
+.layout-dropdownlist .layui-input-block .layui-form-select .layui-select-title input{
+	height: 25px;
+	width: 100%;
+	/* margin-left: 0; */
+	padding-left: 5px;
+	border-color: #6d6664;
+	font-size: 16px;
+}
+.layout-dropdownlist .layui-input-block .layui-form-select .layui-select-title i{
+	display: none;
+}
+.layout-dropdownlist .layui-input-block img {
+	position: absolute;
+	right: 8px;
+	top: 8px;
+}
+.layout-dropdownlist .layui-input-block .layui-form-select dl {
+	width: 100%;
+	padding: 0;
+	left: 0;
+}
+.layout-dropdownlist .layui-input-block .layui-form-select dl dd {
+	padding: 0;
+	line-height: 25px;
+}
+.layout-input .layui-input-block input{
+	height: 25px;
+	width: 100%;
+	margin-left: 0;
+	padding-left: 5px;
+	border-color: #6d6664;
+	border-radius:2px;
+	font-size: 16px;
+}
+
+.layout-tbl-input{
+	width: 100%;
+	border: none;
+	/* background-color: #00FF00; */
+}
+.layout-tbl-input td{
+	width: 50%;
+	height: 25px;
+	border: none;
+}
+.layout-tbl-input .layui-form-label {
+	width: 42%;
+}
+.layout-tbl-input .layui-input-block{
+	width: 58%;
+	margin-left: 42%;
+}
+.layout-tbl-input .layui-input-block input{
+	border: none;
+	height: 25px;
+	width: 100%;
+	margin-left: 0;
+	padding-left: 5px;
+	border-color: #6d6664;
+	border-radius:2px;
+	font-size: 16px;
+}
+.cut-line {
+	height: 2px;
+	margin: auto;
+	width: 100%;
+	/* background-color: #666666; */
+}
+.cut-line img {
+	width: 100%;
+}
+.layout-tbl-paging {
+	padding-top: 5px;
+	width: 100%;
+	height: 520px;
+	border: 1px solid #d7d2d1;
+	margin-top: 20px;
+}
+.layout-tbl-summary {
+	width: 96%;
+	height: 30px;
+}
+.tbl-title {
+	width: 98%;
+	/* background-color: #0000FF; */
+	margin: auto;
+}
+.tbl-title .layui-input-block {
+	width: 50%;
+	margin-left: 50%;
+}
+.tbl-title .layui-form-label {
+	width: 50%;
+}
+.btn-del {
+	width: 90%;
+	height: 36px;
+	background-color: #ff5722;
+	border-radius: 5px;
+	color: #FFFFFF;
+	margin: auto;
+	line-height: 36px;
+	font-size: 16px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+} 
+.tbl-btn-del {
+	width: 90%;
+	min-width: 40px;
+	height: 36px;
+	background-color: #ff5722;
+	border-radius: 5px;
+	color: #FFFFFF;
+	margin: auto;
+	line-height: 36px;
+	font-size: 16px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+} 
+.tbl-btn-del:active {
+	opacity: 0.8;
+}
+.layout-radio {
+	/* background-color: #009688; */
+	height: 25px;
+	line-height: 25px;
+}
+.layout-radio .layui-form-label {
+	width: 20%;
+	height: 25px;
+	line-height: 25px;
+}
+.layout-radio table {
+	width: 45%;
+	/* color: #3C3C3C; */
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+.layout-radio table td {
+	/* color: #3C3C3C; */
+	font-size: 13px;
+	line-height: 25px;
+	border: 0;
+	height: 25px;
+}
+.layout-radio .layui-icon {
+	margin: 0;
+	padding: 0;
+	font-size: 16px;
+	line-height: 16px;
+}
+.layout-radio .layui-form-radio {
+	margin: 0;
+	padding: 0;
+	margin-right: 5px;
+	height: 25px;
+	line-height: 25px;
+	display: inline-block;
+	margin-top: 0;
+}
+.layout-tab-page {
+	width: 100%;
+	height: 160px;
+	/* background-color: #009E94; */
+}
+.layout-tab-title {
+	width: 100%;
+	height: 25px;
+	/* background-color: #92B8B1; */
+}
+.layout-tab-content {
+	width: 100%;
+	margin-top: 10px;
+	/* background-color: #009688; */
+	/* height: 200px; */
+	border: 0;
+}
+.layout-tab-content td {
+	height: 25px;
+	border: 0;
+}
+.layout-tab-content .layui-form-item {
+	height: 25px;
+	margin: 0;
+	padding: 0;
+}
+.out-tab {
+	float: left;
+	width: 79%;
+	height: 25px;
+	text-align: center;
+}
+.out-tab span {
+	width: 20%;
+	border: 1px solid #BFC4C5;
+	border-right: none;
+	/* color: #FFFFFF; */
+	height: 25px;
+	line-height: 25px;
+	/* background-color: #FFFFFF; */
+	margin-right: 0;
+	padding-right: 0;
+	margin: 0;
+	padding: 0;
+	float: left;
+}
+.out-tab-select {
+	background-color: #4CAF50;
+	color: #FFFFFF;
+}
+.tbl-box-sim-info {
+	border: none;
+	width: 100%;
+}
+.tbl-box-sim-info td {
+	border: none;
+	/* background-color: #007BFF; */
+}
+.tbl-box-sim-info .layui-form-label {
+	width: 50%;
+}
+.tbl-box-sim-info .layui-input-block {
+	width: 50%;
+	background-color: #92B8B1;
+	margin-left: 50%;
+}
+.tbl-box-sim-info .layui-input {
+	height: 25px;
+	border: 0;
+}
+.layout-tab-content .layui-input {
+	height: 25px;
+	font-size: 13px;
+	line-height: 25px;
+}
+.layui-input {
+	font-size: 13px;
+}
+.foot-container {
+	position: fixed;
+	bottom: 2px;
+	margin: auto;
+	width: 100%;
+	/* background-color: #007BFF; */
+	max-width: 320px;
+}
+.pallet-input-mod {
+	margin-left: -25px;
+}

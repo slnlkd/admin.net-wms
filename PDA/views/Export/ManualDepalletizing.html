@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="viewport" content="user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Boxline PDA</title>
+
+	<link rel="stylesheet" href="../../layui/css/layui.css" />
+	<link rel="stylesheet" href="../../css/style.css" />
+	<script src="../../js/adaptive.js"></script>
+	<link rel="stylesheet" href="../../css/my.css" />
+	<style type="text/css">
+		.layout-btn-StockGroup {
+			color: #FFFFFF;
+			background-color: #079f6f;
+			width: 50%;
+			height: 30px;
+			border-radius: 5px;
+			border: 0;
+
+		}
+
+		.layout-btn-StockGroup1 {
+			color: #FFFFFF;
+			background-color: #079f6f;
+			width: 100%;
+			height: 40px;
+			border-radius: 5px;
+			border: 0;
+			margin-inline: 75px;
+		}
+
+		.out-scatter-num .local-input {
+			width: 40%;
+			height: 25px;
+			float: left;
+		}
+
+		.out-scatter-num .local-ok button {
+			height: 25px;
+			border: 0;
+			color: #FFFFFF;
+			background-color: #0a93e3;
+			border-radius: 3px;
+			padding: 2px;
+			margin-left: 10px;
+			width: 100%;
+		}
+
+		.out-scatter-num .layui-input-block .layui-input {
+			padding-left: 5px;
+		}
+
+		.out-scatter-num .local-ok {
+			width: 20%;
+			height: 25px;
+			float: left;
+			margin-left: 0;
+		}
+
+		.out-scatter-num .local-ok button {
+			margin-left: 0;
+		}
+
+		.out-scatter-num .layui-form-label {
+			width: 30%;
+			/* background-color: #007BFF; */
+		}
+
+		.out-scatter-num .layui-input-block {
+			width: 100%;
+			/* background-color: #009E94; */
+			margin-left: 0;
+		}
+
+		/* 遮罩层 */
+		#overlay {
+			position: fixed;
+			left: 0px;
+			top: 0px;
+			width: 100%;
+			height: 100%;
+			font-size: 16px;
+			/* IE9以下不支持rgba模式 */
+			background-color: rgba(0, 0, 0, 0.5);
+			/* 兼容IE8及以下 */
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000, endColorstr=#7f000000);
+			display: none;
+		}
+
+		/* 弹出框主体 */
+		.popup {
+			background-color: #ffffff;
+			max-width: 400px;
+			min-width: 200px;
+			height: 180px;
+			border-radius: 5px;
+			margin: 100px auto;
+			text-align: center;
+		}
+
+		/* 弹出框的标题 */
+		.popup_title {
+			height: 30px;
+			line-height: 30px;
+			border-bottom: solid 1px #cccccc;
+		}
+
+		/* 弹出框的内容 */
+		.popup_content {
+			height: 20px;
+			line-height: 20px;
+			padding: 5px 10px;
+		}
+
+		/* 弹出框的按钮栏 */
+		.popup_btn {
+			padding-bottom: 5px;
+		}
+
+		.out-scatter-num .local-ok button {
+			margin-left: 0;
+		}
+
+		/* 弹出框的按钮 */
+		.popup_btn button {
+			color: #778899;
+			width: 40%;
+			height: 40px;
+			cursor: pointer;
+			border: solid 1px #cccccc;
+			border-radius: 5px;
+			margin: 5px 10px;
+			color: #ffffff;
+			background-color: #337ab7;
+		}
+	</style>
+	<link rel="stylesheet" href="../../css/adapter.css" />
+</head>
+
+<body>
+	<div id="" class="main-content">
+		<div id="" class="layout-title">
+			<table cellspacing="" cellpadding="">
+				<tr>
+					<td class="img-back"><a href="../../index.html"><img src="../../assets/back.jpg"></a></td>
+					<td class="title-text" lang>人工拆垛</td>
+					<td class="title-menu-icon"><img id="menuImg" src="../../assets/menu.jpg"></td>
+				</tr>
+			</table>
+		</div>
+		<div id="" class="layout-sub-content">
+			<div id="menuList" class="menu">
+				<ul class="" style="text-align: center;">
+					<li><a href="../../index.html" lang>主页</a></li>
+					<li><a href="../../login.html" lang>重新登录</a></li>
+				</ul>
+			</div>
+
+			<div class="layout-bill-info">
+				<form class="layui-form" action="">
+					<div id="" class="layui-form-item layout-input">
+						<label class="layui-form-label" lang>托盘条码：</label>
+						<div class="layui-input-block">
+							<input id="STOCKCODE" type="text" lay-verify="stock"
+								onkeyup="this.value=this.value.replace(/[, ]/g,'')" lang langholder
+								placeholder="请扫描托盘条码" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div id="" class="layui-form-item layout-dropdownlist">
+						<label class="layui-form-label" lang>出库订单：</label>
+						<div class="layui-input-block" id="selectDiv">
+							<!-- <select id="bar" disabled lay-filter="industry" lay-search>
+								<option value=""></option>
+							</select> -->
+							<!--<select id="bar" lay-filter="getbar" lay-search>-->
+							<select id="bar" lay-filter="getbar">
+								<option value=""></option>
+							</select>
+							<img src="../../assets/down_arraw.png">
+						</div>
+					</div>
+					<div id="" class="layui-form-item layout-input">
+						<label class="layui-form-label" lang>外箱条码：</label>
+						<div class="layui-input-block">
+							<input id="BOXCODE" type="text" lay-verify="required"
+								onkeyup="this.value=this.value.replace(/[, ]/g,'')" lang langholder
+								placeholder="请扫描外箱条码" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<table class="layout-tbl-input" cellspacing="" cellpadding="">
+						<tr>
+							<td>
+								<div id="" class="layui-form-item layout-boxinfo">
+									<label class="layui-form-label" lang>出库数量：</label>
+									<div class="layui-input-block">
+										<input id="ExportQuantity" type="text" disabled lay-verify="required"
+											placeholder="" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+							</td>
+							<td>
+								<div id="" class="layui-form-item layout-boxinfo">
+									<label class="layui-form-label" lang>已绑数量：</label>
+									<div class="layui-input-block">
+										<input id="GroupQuantity" type="text" disabled lay-verify="required"
+											placeholder="" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="layui-form-item layout-boxinfo">
+									<label class="layui-form-label" lang>物料编号：</label>
+									<div class="layui-input-block">
+										<input id="MaterialCode" type="text" lay-verify="" disabled placeholder=""
+											class="layui-input">
+									</div>
+								</div>
+							</td>
+							<td>
+								<div class="layui-form-item layout-boxinfo">
+									<label class="layui-form-label" lang>物料名称：</label>
+									<div class="layui-input-block">
+										<input id="MaterialName" type="text" lay-verify="" disabled placeholder=""
+											class="layui-input">
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="layui-form-item layout-boxinfo">
+									<label class="layui-form-label" lang>物料批次：</label>
+									<div class="layui-input-block">
+										<input id="LotNo" type="text" lay-verify="" disabled placeholder=""
+											class="layui-input">
+									</div>
+								</div>
+							</td>
+							<td>
+								<div class="layui-form-item layout-boxinfo">
+									<label class="layui-form-label" lang>箱内数量：</label>
+									<div class="layui-input-block">
+										<input id="qty" type="text" lay-verify="" disabled placeholder=""
+											class="layui-input">
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+					<table class="layout-tbl-submit" cellspacing="" cellpadding="">
+						<tr>
+							<td>
+								<button class="layout-btn layout-btn-red" lang type="button" lay-submit
+									lay-filter="formBind">绑定</button>
+							</td>
+							<td>
+								<button id="btnScanBox" class="layout-btn layout-btn-blue" lang
+									type="button">扫描箱码</button>
+							</td>
+						</tr>
+					</table>
+				</form>
+
+			</div>
+
+			<div id="" class="cut-line">
+				<img src="../../assets/fengexian.png">
+			</div>
+
+			<div class="layout-tbl-paging" id="">
+				<!-- <div id="" class="tbl-title">
+					<table class="layout-tbl-input" border="0" cellspacing="" cellpadding="">
+						<tr>
+							<td>
+								<div class="layout-boxinfo">
+									<label class="layui-form-label" lang style="width: 30%;">托盘号</label>
+									<div class="layui-input-block" style="width: 70%;">
+										<input id="palletCode" type="text" disabled lay-verify="required" placeholder=""
+											autocomplete="off" class="layui-input"
+											style="margin-left: -35px;width: 100%;">
+									</div>
+								</div>
+							</td>
+							<td>
+								<div class="layout-boxinfo">
+									<label class="layui-form-label" style="color: #FF0000" lang>箱子数量：</label>
+									<div class="layui-input-block">
+										<input id="boxNum" type="text" disabled lay-verify="required" placeholder=""
+											autocomplete="off" class="layui-input">
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div> -->
+				<table id="tableBoxList" class="tbl-box-list" border="" cellspacing="" cellpadding="">
+					<tr>
+						<th lang>箱码</th>
+						<th lang>名称</th>
+						<th lang>数量</th>
+						<th lang>操作</th>
+					</tr>
+					<tr id="boxCell" style="display: none">
+						<td name="BoxCode">AG000001</td>
+						<td name="MaterialName">疫苗名称名称名称</td>
+						<td name="ScanQty">30</td>
+						<td name="del">
+							<div id="" class="tbl-btn-del" lang>
+								删除
+							</div>
+						</td>
+					</tr>
+				</table>
+
+				<!-- 分页 -->
+				<table id="tableBoxPages" class="tbl-box-pages" border="" cellspacing="" cellpadding="">
+					<tr>
+						<td class="page-prev" lang>上一页</td>
+						<td class="page-num page-num-select">1</td>
+						<td class="page-num">2</td>
+						<td class="page-num">3</td>
+						<td class="page-num">4</td>
+						<td class="page-num">5</td>
+						<td class="page-next" lang>下一页</td>
+					</tr>
+				</table>
+
+				<table class="layout-tbl-submit">
+					<tr>
+						<td>
+
+							<!--<button class="layout-btn-StockGroup" lay-submit="" lay-filter="formOk" lang style="position:fixed;bottom: 20%;	color: #FFFFFF;
+				background-color: #079f6f;border-radius: 5px;
+	border: 0; width: 10%;	height: 30px;  margin-inline: -5%;" type="button">出库确认</button>-->
+							<!--style="position: fixed;bottom:0;background-color: #ddd;width: 100%;height: 50px;"      -->
+							<!--<button class="layout-btn-StockGroup" lay-submit="" lay-filter="formOk" lang
+								style="bottom:190px;position: fixed;width:150px;height: 35px; margin-inline: -75px;"
+								type="button">出库确认</button>-->
+						</td>
+					</tr>
+				</table>
+
+
+
+				<div id="overlay">
+					<div class="popup">
+						<p class="popup_title">绑定拆垛</p>
+						<p class="popup_content">拆垛数量</p>
+						<input class="popup_content" id="outScatterQty" type="number">
+						<div class="popup_btn">
+							<button class="cancelBtn" id="cancelBtn">取消</button>
+							<button class="confirmBtn" id="confirmBtn">确认</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="" class="foot-container">
+
+			<button class="layout-btn layout-btn-StockGroup1" lang type="button" lay-submit
+				lay-filter="formOk">出库确认</button>
+
+		</div>
+	</div>
+	<script src="../../js/jquery-3.5.1.min.js"></script>
+	<script src="../../layui/layui.js"></script>
+	<script src="../../js/public.js"></script>
+	<script src="../../js/language.js"></script>
+	<script src="../../js/jquery.cookie.js"></script>
+	<script>
+		layui.use(['form', 'jquery'], function () {
+
+			var statusint = 1;
+			var form = layui.form
+
+			initLanguage()
+			setLanguage()
+
+			//当前分页
+			var curPageIndex = 1
+
+			function clear() {
+				$("#ExportQuantity").val("");
+				$("#GroupQuantity").val("");
+				$("#MaterialCode").val("");
+				$("#MaterialName").val("");
+				$("#LotNo").val("");
+				$("#ImportQty").val("");
+				$("#qty").val("");
+			}
+			form.on('select(getbar)', function (data) {
+				// layui select 事件中，data.value 是选中的值
+				var selectedValue = data.value || $("#bar").val();
+				console.log("选择出库订单:", selectedValue);
+				if (!selectedValue || selectedValue === "") {
+					console.log("出库订单为空，不清空明细");
+					return;
+				}
+				refreshTable(selectedValue);
+				$("#MaterialCode").val("");
+				$("#MaterialName").val("");
+				$("#LotNo").val("");
+				$("#qty").val("");
+				$("#outScatterQty").val("");
+				$("#BOXCODE").val("");
+			});
+
+			$("#menuImg").click(function (e) {
+				e.stopPropagation()
+
+				if ($("#menuList").is(":hidden")) {
+					$("#menuList").show()
+				} else {
+					$("#menuList").hide()
+				}
+			})
+			$('body').click(function () {
+				$("#menuList").hide()
+			})
+
+			$('#btnScanBox').click(function () {
+				if ($("#BOXCODE").val().replace(/[, ]/g, '') == "" || $("#BOXCODE").val().replace(/[, ]/g, '') == null || $("#BOXCODE").val().replace(/[, ]/g, '') == undefined) {
+					layer.msg("请输入箱码!", {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					}, function () { });
+					return;
+				}
+				checkBoxInfo();
+			})
+
+			$("#selectDiv").click(function () {
+				var input = $('select[id="bar"]').next().find('.layui-select-title input')
+				var val = input.val()
+			})
+			
+			function refreshTable(orderNo) {
+				// 检查参数
+				if (!orderNo || orderNo === "") {
+					console.log("refreshTable: orderNo 为空");
+					return;
+				}
+				//先清空一下箱子列表
+				let trs = $("#tableBoxList tr")
+				let len = trs.length
+				for (i = len - 1; i >= 2; i--) {
+					trs[i].remove();
+				}
+				//设置托盘号
+				$("#palletCode").val($("#STOCKCODE").val().replace(/[, ]/g, ''));
+				var param = {
+					"trayCode": $("#STOCKCODE").val().replace(/[, ]/g, ''),
+					"exportOrderNo": orderNo
+
+				}
+				console.log("refreshTable 调用参数:", param);
+
+				sendData(IP + "/wmsPda/getTrayInfo", param, 'post', function (res) {
+					// 新项目返回格式：{ code: 1, count: 1, msg: "...", flag: "...", data: {...} }
+					// 兼容框架可能包装的格式：res.result 或 res.data
+					var result = res.result || res.data || res;
+					console.log("getTrayInfo 返回:", result);
+					if (result.code == 1) { //成功
+						console.log("getTrayInfo data:", result.data);
+						// 兼容字段名大小写
+						var data = result.data;
+						$("#ExportQuantity").val(data.ExportQuantity || data.exportQuantity);
+						$("#GroupQuantity").val(data.GroupQuantity || data.groupQuantity);
+
+					} else {
+						if ($("#STOCKCODE").val() === "") {
+							return;
+						}
+						layer.msg(result.msg || result.message, {
+							icon: 2,
+							time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						}, function () {
+							//回调
+							$("#ExportQuantity").val("")
+							$("#GroupQuantity").val("")
+							$("#BOXCODE").val("").focus();
+						});
+					}
+				})
+				// return;
+				sendData(IP + "/wmsPda/getManualDepalletizing", param, 'post', function (res) {
+					// 新项目返回格式：{ code: 1, count: n, msg: "...", data: [...] }
+					// 兼容框架可能包装的格式：res.result 或 res.data
+					var result = res.result || res.data || res;
+					console.log("getManualDepalletizing 返回:", JSON.stringify(result));
+					console.log("result.count:", result.count, "result.data:", result.data);
+					
+					// 检查是否有数据：兼容 count > 0 或 data 是数组且长度 > 0
+					var hasData = false;
+					var list = null;
+					if (result.data && Array.isArray(result.data)) {
+						list = result.data;
+						hasData = list.length > 0;
+					} else if (result.count > 0 && result.data) {
+						list = Array.isArray(result.data) ? result.data : [result.data];
+						hasData = list.length > 0;
+					}
+					
+					if (hasData) { //成功
+						console.log("有数据，列表长度:", list.length);
+						var arrTrs = new Array()
+						let idx = 0;
+						// 使用 for 循环遍历数组，而不是 for...in
+						for (var i = 0; i < list.length; i++) {
+							var item = list[i];
+							console.log("处理第", i, "项:", item);
+							var tr = $("#boxCell").eq(0).clone();
+							tr.appendTo("#tableBoxList");
+							// 兼容字段名大小写
+							var boxCode = item.BoxCode || item.boxCode || "";
+							var materialName = item.MaterialName || item.materialName || "";
+							var scanQty = item.ScanQty || item.scanQty || "";
+							tr.attr('id', boxCode)
+							idx++;
+							tr.attr('index', idx)
+							tr.find("td[name='BoxCode']").html(boxCode);
+							tr.find("td[name='MaterialName']").html(materialName);
+							tr.find("td[name='ScanQty']").html(scanQty);
+							var code = boxCode
+							tr.find("td[name='del']").click(function () {
+								var elem = $(this).parent()
+								var BoxCode = elem.attr('id')
+								layer.alert("确定要删除吗？<br>" + BoxCode, {
+									icon: 2,
+									time: 0, //2秒关闭（如果不配置，默认是3秒）
+									btn: ['删除', '取消'],
+									yes: function (index) {
+										layer.close(index);
+										var param = {
+											trayCode: $("#STOCKCODE").val().replace(/[, ]/g, ''),
+											exportOrderNo: $("#bar").val(),
+											boxCode: BoxCode
+										};
+										// console.log(param);return;
+										sendData(IP + "/wmsPda/removeManual", param, 'post', function (res) {
+											// 新项目返回格式：{ success: true/false, message: "..." }
+											// 兼容框架可能包装的格式：res.result 或 res.data
+											var result = res.result || res.data || res;
+											if (result.success === true || result.code == 1) { //成功
+												//layer.msg(result.message || result.msg, {
+												//icon: 1,
+												//time: 1000 //2秒关闭（如果不配置，默认是3秒）
+												//}, function () {
+												//});
+												$("#BOXCODE").val("");
+												//elem.remove();
+												refreshTable($("#bar").val());
+											} else { //不成功
+												layer.msg(result.message || result.msg, {
+													icon: 2,
+													time: 2000 //2秒关闭（如果不配置，默认是3秒）
+												}, function () { });
+											}
+										});
+									}
+								})
+							})
+							tr.show();
+							arrTrs[i] = tr
+						}
+
+						//设置分页
+						setPages(1, list.length)
+					} else { //不成功
+						console.log("无数据或数据格式不正确");
+						//layer.msg("无数据", {
+						//	icon: 2,
+						//	time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						//}, function () { });
+						$("#boxNum").val(0)
+						setPages(1, 0)
+					}
+				});
+			}
+
+			//设置分页
+			function setPages(pageIndex, boxNum) {
+				if (boxNum <= 0) {
+					//列表为空，隐藏分页页码
+					$("#tableBoxPages").hide()
+					return
+				}
+
+				let pageNum = Math.floor(boxNum / 10);
+				if (boxNum % 10 > 0) {
+					pageNum += 1;
+				}
+				$("#tableBoxPages").find("tr").remove()
+				let table = $("#tableBoxPages")
+				$("<tr></tr>").appendTo("#tableBoxPages")
+				$("<td id='prevPage' class='page-prev'>上一页</td>").appendTo("#tableBoxPages tr")
+				$("#tableBoxPages tr").eq(0).find("td[id^='prevPage']").click(function () {
+					onClickPrevPage()
+				})
+				for (i = 1; i < pageNum + 1; i++) {
+					$("<td class='page-num'>" + i + "</td>").appendTo("#tableBoxPages tr")
+				}
+				$("<td id='nextPage' class='page-next'>下一页</td>").appendTo("#tableBoxPages tr")
+				$("#tableBoxPages tr").eq(0).find("td[id^='nextPage']").click(function () {
+					onClickNextPage()
+				})
+				$("#tableBoxPages").show()
+
+				setCurPage(1)
+			}
+
+			//设置当前分页
+			function setCurPage(pageIndex) {
+				let totalTrNum = $("#tableBoxList tr").length
+				if (totalTrNum <= 2) {
+					return
+				}
+
+				let pageNum = getBoxPageNum()
+				if (pageIndex > pageNum) {
+					return
+				}
+
+				let startIndex = (pageIndex - 1) * 10 + 1
+				let n = totalTrNum - startIndex
+				let endIndex = 0
+				if (n > 9) {
+					endIndex = startIndex + 9
+				} else {
+					endIndex = startIndex + n
+				}
+				let trs = $("#tableBoxList tr")
+				let d = 0
+				for (let i = 2; i < trs.length; i++) {
+					let t = trs.eq(i)
+					d = t.attr('index')
+					if (d >= startIndex && d <= endIndex) {
+						//显示行
+						t.show()
+					} else {
+						//隐藏行
+						t.hide()
+					}
+				}
+
+				curPageIndex = pageIndex
+
+				let ptr = $("#tableBoxPages tr")
+				for (let i = 1; i < pageNum + 1; i++) {
+					ptr.eq(0).find("td").eq(i).removeClass("page-num-select")
+					if (i == curPageIndex) {
+						ptr.eq(0).find("td").eq(i).addClass("page-num-select")
+					}
+				}
+			}
+
+			function onClickPrevPage() {
+				if (curPageIndex == 1) {
+					return
+				}
+				setCurPage(curPageIndex - 1)
+			}
+
+			function onClickNextPage() {
+				let n = getBoxPageNum()
+				if (curPageIndex == n) {
+					return
+				}
+				setCurPage(curPageIndex + 1)
+			}
+
+			function getBoxPageNum() {
+				let num = $("#tableBoxList tr").length
+				if (num <= 2) {
+					return 0
+				}
+
+				let pageNum = Math.floor(num / 10);
+				if (num % 10 > 0) {
+					pageNum += 1;
+				}
+
+				return pageNum
+			}
+			//当托盘条码输入框失去焦点时,检查一下托盘状态
+			$("#STOCKCODE").blur(function () {
+				$("#MaterialCode").val("");
+				$("#MaterialName").val("");
+				$("#LotNo").val("");
+				$("#qty").val("");
+				$("#outScatterQty").val("");
+				$("#BOXCODE").val("");
+				if ($("#STOCKCODE").val().replace(/[, ]/g, '') == "") {
+					return;
+				}
+
+				getExportCodeByID();
+			})
+
+			$("#STOCKCODE").keydown(function (e) {
+				if (e.keyCode === 13) {
+					//console.log("13s");
+					if ($("#STOCKCODE").val().replace(/[, ]/g, '') == "") {
+						return
+					}
+					getExportCodeByID();
+				}
+			});
+			var Boxlist = [];
+			//检查箱子信息
+			function checkBoxInfo() {
+				var param = {
+					"boxCode": $("#BOXCODE").val().replace(/[, ]/g, ''),
+					"exportOrderNo": $("#bar").val(),
+					"trayCode": $("#STOCKCODE").val().replace(/[, ]/g, '')
+				}
+
+				sendData(IP + "/wmsPda/getManBoxInfo", param, 'post', function (res) {
+					// 新项目返回格式：{ code: 1, count: 1, msg: "...", flag: "...", data: {...} }
+					// 兼容框架可能包装的格式：res.result 或 res.data
+					var result = res.result || res.data || res;
+
+					if (result.code == 1) {
+						Boxlist = result.data;
+						console.log(Boxlist);
+						// 兼容字段名大小写
+						var data = result.data;
+						//$("#ExportQuantity").val(data.ExportQuantity || data.exportQuantity);
+						//$("#GroupQuantity").val(data.GroupQuantity || data.groupQuantity);
+						$("#MaterialCode").val(data.MaterialCode || data.materialCode);
+						$("#MaterialName").val(data.ExportMaterialName || data.exportMaterialName);
+						$("#LotNo").val(data.LotNo || data.lotNo);
+						var qty = Number(data.Qty || data.qty || 0);
+						var lockQty = Number(data.LockQuantity || data.lockQuantity || 0);
+						$("#qty").val(qty + lockQty);
+
+					}
+
+
+					else {
+						layer.msg(result.msg, {
+							icon: 2,
+							time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						});
+					}
+				});
+
+			}
+
+			function getExportCodeByID() {
+				var param = {
+					"stockCode": $("#STOCKCODE").val().replace(/[, ]/g, ''),
+					"isBoxCode":"0"//判断是否有箱码：0：有；1：无
+				}
+				sendData(IP + "/wmsPda/getExprotCodeById", param, 'post', function (res) {
+					// 新项目返回格式：{ code: 1, count: n, msg: "...", data: [...] }
+					// 兼容框架可能包装的格式：res.result 或 res.data
+					var result = res.result || res.data || res;
+
+					if (result.code == 1) { //成功
+						$("#bar").empty();
+						for (var i = 0; i < result.data.length; i++) {
+							// 兼容字段名大小写：ExportOrderNo 或 exportOrderNo
+							var exportOrderNo = result.data[i].ExportOrderNo || result.data[i].exportOrderNo;
+							console.log(exportOrderNo + "-----------" + i);
+							$("#bar").append('<option value =' + exportOrderNo + '>' + exportOrderNo +
+								'</option>');
+
+						}
+						form.render('select');
+						// 兼容字段名大小写
+						var firstOrderNo = result.data[0].ExportOrderNo || result.data[0].exportOrderNo;
+						getQty(firstOrderNo);
+						refreshTable(firstOrderNo);
+					} else { //不成功
+						//layer.msg(result.msg, {
+						//	icon: 2,
+						//	time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						//}, function () { });
+					}
+
+				});
+
+
+			}
+			function getQty(exportCode) {
+				var param = {
+					"trayCode": $("#STOCKCODE").val().replace(/[, ]/g, ''),
+					"exportOrderNo": exportCode
+				}
+				sendData(IP + "/wmsPda/getTrayInfo", param, 'post', function (res) {
+					// 新项目返回格式：{ code: 1, count: 1, msg: "...", flag: "...", data: {...} }
+					// 兼容框架可能包装的格式：res.result 或 res.data
+					var result = res.result || res.data || res;
+					if (result.code == 1) { //成功
+						console.log(result.data);
+						// 兼容字段名大小写
+						var data = result.data;
+						$("#ExportQuantity").val(data.ExportQuantity || data.exportQuantity);
+						$("#GroupQuantity").val(data.GroupQuantity || data.groupQuantity);
+
+					} else { //不成功
+						layer.msg(result.msg, {
+							icon: 2,
+							time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						}, function () {
+							//回调
+							$("#ExportQuantity").val("")
+							$("#GroupQuantity").val("")
+							$("#BOXCODE").focus();
+						});
+					}
+				})
+			}
+
+
+			var boxId = 0;
+			$("#BOXCODE").keydown(function (e) {
+				if (e.keyCode === 13) {
+					if ($("#BOXCODE").val().replace(/[, ]/g, '') == "") {
+						return
+					}
+
+					checkBoxInfo()
+				}
+			});
+			let isok = 0;
+			form.on('submit(formBind)', function (data) {
+
+				var tab = document.getElementById("tableBoxList");
+
+				var rows = tab.rows;
+				for (var i = 0; i < rows.length; i++) { //遍历表格的行
+					if (i < 2) {
+						continue;
+					}
+
+					if (rows[i].cells[0].innerHTML == $("#BOXCODE").val().replace(/[, ]/g, '')) {
+						//if (data.GroupQuantity > 0) {
+						layer.msg('该箱码已存在，如需修改请删除后再绑定！', {
+							icon: 2,
+							time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						});
+						return;
+						//}
+					}
+				}
+				if (!$("#STOCKCODE").val().replace(/[, ]/g, '')) {
+					layer.msg('请扫描托盘条码', {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+					return;
+				}
+				if (!$("#BOXCODE").val().replace(/[, ]/g, '')) {
+					layer.msg('请扫描外箱条码', {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+					return;
+				}
+				if (!$("#MaterialCode").val()) {
+					layer.msg('物料编号不能为空', {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+					return;
+				}
+				var param2 = {
+					"exportQuantity": $("#ExportQuantity").val(),
+					"qty": $("#qty").val(),
+					"groupQuantity": $("#GroupQuantity").val()
+				}
+				sendData(IP + "/wmsPda/getBoxSum", param2, 'post', function (res1) {
+					// 新项目返回格式：{ code: 1, count: 1, msg: "...", data: {...} }
+					// 兼容框架可能包装的格式：res.result 或 res.data
+					var result = res1.result || res1.data || res1;
+					if (result.code == 1) {
+						// 兼容字段名大小写
+						var data = result.data;
+						$("#outScatterQty").val(data.OutScatterQty || data.outScatterQty);
+					} else {
+						$("#outScatterQty").val($("#qty").val());
+						//layer.msg(result.msg, {
+						//	icon: 2,
+						//	time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						//});
+					}
+				});
+				showPopup();
+			});
+			form.on('submit(formOk)', function (data) {
+				// showPopup();
+				if (!$("#STOCKCODE").val().replace(/[, ]/g, '')) {
+					layer.msg('请扫描托盘条码', {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+					return;
+				}
+				var param = {
+					trayCode: $("#STOCKCODE").val().replace(/[, ]/g, ''),
+					exportOrderNo: $("#bar").val()
+				}
+				sendData(IP + "/wmsPda/saveManTask", param, 'post', function (res) {
+					// 新项目返回格式：{ code: 1, count: 0, msg: "...", data: "" }
+					// 兼容框架可能包装的格式：res.result 或 res.data
+					var result = res.result || res.data || res;
+					if (result.code == 1) { //成功 
+						layer.msg(result.msg, {
+							icon: 1,
+							time: 1000 //2秒关闭（如果不配置，默认是3秒）
+						}, function () {
+							$("#STOCKCODE").val("");
+							$("#MaterialCode").val("");
+							$("#MaterialName").val("");
+							$("#LotNo").val("");
+							$("#qty").val("");
+							$("#outScatterQty").val("");
+							refreshTable($("#bar").val());
+							$("#BOXCODE").focus();
+							/* var param2 = {
+							// 	"BoxCode": $("#BOXCODE").val().replace(/[, ]/g, ''),
+							// 	"TrayCode": $("#STOCKCODE").val().replace(/[, ]/g, ''),
+							// 	"ExportOrderNo": $("#bar").val()
+							// }
+							// sendData(IP + "/PdaInterface/GetTrayInfo", param2, 'post', function (res) {
+							// 	if (res.code == 1) { //成功
+							// 		$("#ExportQuantity").val(res.data.ExportQuantity);
+							// 		$("#GroupQuantity").val(res.data.GroupQuantity);
+							// 		$("#BOXCODE").val("");
+							// 		//$("#BOXCODE").focus();
+
+							// 		refreshTable(1, "");
+							// 	} else { //不成功
+							// 		layer.msg(res.msg, {
+							// 			icon: 2,
+							// 			time: 2000 //2秒关闭（如果不配置，默认是3秒）
+							// 		}, function () {
+							// 			//回调
+							// 			$("#ExportQuantity").val("")
+							// 			$("#GroupQuantity").val("")
+							// 			$("#BOXCODE").focus();
+							// 		});
+							// 	}
+							 })*/
+						});
+					} else { //不成功
+						layer.msg(result.msg, {
+							icon: 2,
+							time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						}, function () {
+							//回调
+						});
+					}
+				});
+				return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+			});
+			function showPopup() {
+				var overlay = document.getElementById("overlay");
+				overlay.style.display = "block";
+			}
+			function hidePopup() {
+				var overlay = document.getElementById("overlay");
+				overlay.style.display = "none";
+			}
+			function hidePopup1() {
+				if (Number($("#outScatterQty").val()) === 0) {
+					layer.msg('拆垛数量不能为0', {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+					return;
+				}
+				if (!$("#outScatterQty").val()) {
+					layer.msg('拆垛数量不能为空', {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+					$("#outScatterQty").focus();
+				}
+				if (isNaN($("#outScatterQty").val())) {
+					layer.msg('拆垛数量只能为数字！', {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+					$("#outScatterQty").focus();
+					return;
+				}
+				if (Number($("#outScatterQty").val()) > Number($("#qty").val())) {
+					layer.msg('拆垛数量不能大于箱内数量！', {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+					$("#outScatterQty").focus();
+					return;
+				}
+				console.log((Number($("#ExportQuantity").val())) + "--------------出库数量");
+				// return;
+				if ((Number($("#outScatterQty").val()) + Number($("#GroupQuantity").val())) > Number($("#ExportQuantity").val())) {
+					layer.msg('拆垛数量+已绑数量不能大于出库数量！', {
+						icon: 2,
+						time: 2000 //2秒关闭（如果不配置，默认是3秒）
+					});
+					return;
+				}
+
+				var param = {
+					boxCode: Boxlist.BoxCode,
+					exportOrderNo: $('#bar').val(),
+					qty: $("#qty").val(),
+					scanQty: $("#outScatterQty").val(),
+					trayCode: $("#STOCKCODE").val().replace(/[, ]/g, '')
+				}
+				sendData(IP + "/wmsPda/addManualDepalletizing", param, 'post', function (res) {
+					// 新项目返回格式：{ success: true/false, message: "..." }
+					// 兼容框架可能包装的格式：res.result 或 res.data
+					var result = res.result || res.data || res;
+
+					if (result.success === true || result.code == 1) { //成功
+
+						//if (statusint === 0) {
+						//$('#confirmBtn').attr("disabled",true);
+						//statusint = 1;
+						//}
+						layer.msg(result.message || result.msg, {
+							icon: 1,
+							time: 1000 //2秒关闭（如果不配置，默认是3秒）
+						}, function () {
+
+							var overlay = document.getElementById("overlay");
+							overlay.style.display = "none";
+							$("#MaterialCode").val("");
+							$("#MaterialName").val("");
+							$("#LotNo").val("");
+							$("#qty").val("");
+							$("#outScatterQty").val("");
+							var param2 = {
+								"boxCode": $("#BOXCODE").val().replace(/[, ]/g, ''),
+								"trayCode": $("#STOCKCODE").val().replace(/[, ]/g, ''),
+								"exportOrderNo": $("#bar").val()
+							}
+							sendData(IP + "/wmsPda/getTrayInfo", param2, 'post', function (res) {
+								// 新项目返回格式：{ code: 1, count: 1, msg: "...", flag: "...", data: {...} }
+								// 兼容框架可能包装的格式：res.result 或 res.data
+								var result2 = res.result || res.data || res;
+								if (result2.code == 1) { //成功
+									// 兼容字段名大小写
+									var data2 = result2.data;
+									$("#ExportQuantity").val(data2.ExportQuantity || data2.exportQuantity);
+									$("#GroupQuantity").val(data2.GroupQuantity || data2.groupQuantity);
+									$("#BOXCODE").val("");
+									$("#BOXCODE").focus();
+									refreshTable($("#bar").val());
+								} else { //不成功
+									layer.msg(result2.msg, {
+										icon: 2,
+										time: 2000 //2秒关闭（如果不配置，默认是3秒）
+									}, function () {
+										//回调
+										$("#ExportQuantity").val("")
+										$("#GroupQuantity").val("");
+
+										$("#BOXCODE").focus();
+									});
+								}
+							})
+						});
+					} else { //不成功
+						layer.msg(result.message || result.msg, {
+							icon: 2,
+							time: 2000 //2秒关闭（如果不配置，默认是3秒）
+						}, function () {
+							//回调
+						});
+					}
+				});
+
+
+				return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+			}
+			$("#confirmBtn").click(function () {
+				hidePopup1();
+			})
+			$("#cancelBtn").click(function () {
+				hidePopup();
+			})
+		})
+	</script>
+</body>
+
+</html>

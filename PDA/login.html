@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Boxline PDA</title>
+
+	<link rel="stylesheet" href="layui/css/layui.css" />
+	<link rel="stylesheet" href="css/style.css" />
+	<script src="js/adaptive.js"></script>
+	<link rel="stylesheet" href="css/my.css" />
+	<style type="text/css">
+		.main {
+			width: 86%;
+			margin: auto;
+		}
+
+		.logo {
+			margin-top: 30px;
+			text-align: center;
+		}
+
+		.logo img {
+			width: 68%;
+		}
+
+		.layui-input-block {
+			margin-left: 8%;
+			width: 92%;
+		}
+
+		.layui-input-block .layui-input {
+			border: none;
+			padding-left: 8px;
+			font-size: 16px;
+			height: 35px;
+		}
+
+		.my-form-item {
+			margin-top: 10px;
+			height: 35px;
+		}
+
+		.little-icon {
+			width: 8%;
+			float: left;
+			text-align: center;
+			line-height: 32px;
+		}
+
+		.btn-login {
+			width: 100%;
+			text-align: center;
+			height: 46px;
+			margin-top: 30px;
+		}
+
+		.btn-login input {
+			border: none;
+			color: #FFFFFF;
+			background-color: #0a93e3;
+			background-size: 100% 100%;
+			width: 96%;
+			height: 100%;
+			font-size: 20px;
+			border-radius: 5px;
+		}
+
+		.btn-login input:active {
+			opacity: 0.8;
+		}
+
+		.dropdown-lang {
+			width: 92%;
+			margin-left: 8%;
+			position: relative;
+		}
+
+		.dropdown-lang .layui-edge {
+			display: none;
+		}
+
+		.dropdown-lang input {
+			border: 0;
+			font-size: 16px;
+		}
+
+		.dropdown-lang img {
+			position: absolute;
+			right: 18px;
+			top: 18px;
+			z-index: 5;
+		}
+
+		.dropdown-lang dl {
+			line-height: 50px;
+			padding: 0;
+			margin-top: 13px;
+			left: 0;
+			width: 100%;
+		}
+
+		.dropdown-lang dl dd {
+			line-height: 50px;
+			padding: 0;
+			padding-left: 8px;
+			font-size: 16px;
+		}
+	</style>
+	<link rel="stylesheet" href="css/adapter.css" />
+</head>
+
+<body>
+	<div class="main-content">
+		<div class="logo">
+			<img src="assets/logo.png">
+		</div>
+		<form class="layui-form login_form">
+			<div class="layui-form-item my-form-item">
+				<div class="little-icon">
+					<img src="assets/user.png">
+				</div>
+				<div class="layui-input-block">
+					<input type="text" lang lay-verify="required" langholder value="" id="username"
+						lay-reqText="Please input username" placeholder="请输入用户名" class="layui-input">
+				</div>
+				<hr style="margin-top: 0;background-color: #cfcfcf;">
+			</div>
+			<div class="layui-form-item my-form-item">
+				<div class="little-icon">
+					<img src="assets/pwd.png">
+				</div>
+				<div class="layui-input-block">
+					<input type="password" lang langholder lay-verify="required" value="" id="userpwd"
+						lay-reqText="Please input password" placeholder="请输入密码" class="layui-input">
+				</div>
+				<hr style="margin-top: 0;background-color: #cfcfcf;">
+			</div>
+			<div class="btn-login">
+				<a><input type="button" lay-submit lay-filter="formDemo" lang value="登录"></a>
+			</div>
+		</form>
+	</div>
+	<script src="js/jquery-3.5.1.min.js"></script>
+	<script src="layui/layui.js"></script>
+	<script src="js/public.js"></script>
+	<script src="js/language.js"></script>
+	<script src="js/jquery.cookie.js"></script>
+	<script src="js/jquery.md5.js"></script>
+	<script src="js/sm-crypto-min.js"></script>
+	<script>
+		layui.use(['form'], function () {
+			var form = layui.form;
+			var publicKey = '042DDCD80A9AD507B44FFCB70B4C9666F0E4AE52EB2F39C82497688345974303B78930D7A707B8B1487098BB2C5DD38D593028DB661AE853EA46CAAB490606DA73' // 公钥
+
+			form.render('select')
+
+			// 清除之前的 token 和用户信息
+			removeToken();
+			localStorage.clear();
+			$.cookie('userId', '');
+			$.cookie('userName', '');
+
+			form.on('submit(formDemo)', function (data) {
+				let encryptData = smEncrypt.sm2Encrypt($("#userpwd").val(), publicKey,1);
+				var param = {
+					account: $("#username").val(),
+					password: encryptData
+				}
+				
+				// 使用修改后的 sendData 函数，第四个参数 false 表示不需要 token
+				sendData(IP + "/sysAuth/loginPDA", param, 'post', function (res) {
+					if (res.code == 200) {//成功
+						// 存储 token 和用户信息
+						if (res.result.accessToken) {
+							saveToken(res.result.accessToken, true); // true 表示持久化存储
+							saveRefreshToken(res.result.refreshToken, true); // true 表示持久化存储
+						} else {
+							// 如果后端没有返回 Token 字段，可能需要根据实际响应结构调整
+							console.warn("后端响应中没有 Token 字段");
+						}
+						
+						layer.msg('登陆成功', {
+							icon: 1,
+							time: 500 //0.5秒关闭
+						}, function () {
+							let userInfo = parseJWT(res.result.accessToken);
+							localStorage.setItem('userInfo', JSON.stringify(userInfo));
+							// 存储用户信息到 cookie（如果还需要的话）
+							$.cookie('userId', userInfo.UserId);
+							$.cookie('userName', userInfo.RealName);
+							
+							// 跳转到首页
+							location.href = "index.html";
+						});
+					} else {//不成功
+						layer.msg('登陆失败: ' + (res.message || '请检查用户名和密码'), {
+							icon: 2,
+							time: 2000 //2秒关闭
+						});
+					}
+				}, false); // false 表示这个登录请求不需要 token
+				return false;
+			});
+		})
+	</script>
+</body>
+
+</html>
