@@ -46,6 +46,7 @@
     <PackageReference Include="MailKit" Version="4.14.1" />
     <PackageReference Include="MiniExcel" Version="1.41.4" />
     <PackageReference Include="MiniWord" Version="0.9.2" />
+    <PackageReference Include="MySqlConnector" Version="2.2.5" />
     <PackageReference Include="NewLife.Redis" Version="6.3.2025.1001" />
     <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="4.0.0" />
     <PackageReference Include="OnceMi.AspNetCore.OSS" Version="1.2.0" />
