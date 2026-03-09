@@ -1,0 +1,41 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+COPY Admin.NET/ ./Admin.NET/
+
+RUN dotnet restore ./Admin.NET/Admin.NET.sln
+RUN dotnet publish ./Admin.NET/Admin.NET.Web.Entry/Admin.NET.Web.Entry.csproj \
+    -c Release \
+    -f net9.0 \
+    -o /app/publish \
+    /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        fontconfig \
+        libfreetype6 \
+        libgdiplus \
+        libjpeg62-turbo \
+        libpng16-16 \
+        libx11-6 \
+        libxext6 \
+        libxrender1 \
+        procps \
+        tzdata \
+        zlib1g \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV TZ=Asia/Shanghai
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+COPY --from=build /app/publish/ /app/
+
+RUN chmod +x /app/wait-for-it.sh 2>/dev/null || true
+
+EXPOSE 5005
+
+ENTRYPOINT ["dotnet", "Admin.NET.Web.Entry.dll"]

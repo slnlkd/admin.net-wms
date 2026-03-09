@@ -30,6 +30,12 @@ Admin.NET 是基于 .NET6 (Furion/SqlSugar) 实现的通用权限开发框架，
 5. [GitHub 镜像地址](https://github.com/zuohuaijun/Admin.NET.git)  [Gitee 镜像地址](https://gitee.com/zuohuaijun/Admin.NET.git)  [GitCode 镜像地址](https://gitcode.com/zuohuaijun/Admin.NET.git)
 6.  在线文档 [https://adminnet.top/](https://adminnet.top/)
 
+## Docker 部署
+
+项目已补充适合云服务器直接构建运行的 Docker 方案，部署说明见：
+
+- [docker/README.md](./docker/README.md)
+
 ## 📙开发流程
 ```bash
 1. 建议每个应用系统单独创建一个工程（Admin.NET.Application层只是示例），单独设置各项配置，引用Admin.NET.Core层（非必须不改工程名）
