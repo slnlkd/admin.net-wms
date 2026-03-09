@@ -1,0 +1,99 @@
+# Build and Release Folders
+bin-debug/
+bin-release/
+[Oo]bj/
+[Bb]in/
+
+# Other files and folders
+.settings/
+
+# Executables
+*.swf
+*.air
+*.ipa
+*.apk
+
+# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
+# should NOT be excluded as they contain compiler settings and other important
+# information for Eclipse / Flash Builder.
+/Admin.NET/.vs
+/Admin.NET/packages
+/Admin.NET/Admin.NET.Web.Entry/wwwroot/[Uu]pload
+/Admin.NET/Admin.NET.Web.Entry/wwwroot/[Aa]vatar
+/Admin.NET/Admin.NET.Web.Entry/wwwroot/[Ss]ignature
+/Admin.NET/Admin.NET.Web.Entry/wwwroot/[Cc]odeGen
+/Admin.NET/Admin.NET.Web.Entry/wwwroot/is-cache
+/Admin.NET/Admin.NET.Web.Core/Admin.NET.Web.Core.csproj.user
+/Admin.NET/Admin.NET.Web.Entry/Admin.NET.Web.Entry.csproj.user
+/Admin.NET/Admin.NET.Web.Entry/Properties/PublishProfiles
+/Admin.NET/Admin.NET.Web.Entry/publish
+/Admin.NET/Admin.NET.Web.Entry/logs
+/Admin.NET/Admin.NET.Web.Entry/Admin.NET.db
+/Admin.NET/Admin.NET.Web.Entry/.config
+
+# folders
+dist/
+node_modules/
+/Web/package-lock.json
+/Web/public/config.js
+/Web/stats.html
+/Web/npminstall-debug.log
+.vs
+.idea
+.gitee
+.DS_Store
+/doc
+/项目文件
+/Admin.NET/Admin.NET.Web.Entry/Admin.NET.db-journal
+/Admin.NET/Admin.NET.sln.DotSettings.user
+Admin.NET/Admin.NET.Application/Configuration/DeepSeek.json
+/Web/.env.development
+/Admin.NET/publish
+/Admin.NET/publish.zip
+/Web/dist.zip
+/Admin.NET/.vscode/launch.json
+/Admin.NET/.vscode/tasks.json
+GEMINI.md
+.claude/settings.local.json
+/.claude/settings.local.json
+/CLAUDE.md
+.claude/commands
+/LKD
+nul
+.iflow/settings.json
+Admin.NET/Admin.NET.Application/Configuration/Database.json
+
+
+/PDA/index.html
+/PDA/js/public.js
+PDA/js/public.js
+PDA/index.html
+.claude/settings.json
+PDA/js/public.js
+PDA/js/public.js
+/PDA/js/public.js
+
+# Claude AI 临时文件
+tmpclaude-*
+/Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/HW
+/Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CC
+/Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/Gemini
+/Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/IF
+/项目文件/力诺制剂车间密集库方案 v1.2（会签版本）车间输送线8.11(2).dxf
+/PDA/js/public.js
+/PDA/js/public.js
+/PDA/views/Import/productEnter.html.backup.20260112_154059
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/储位需求.txt
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/储位需求简单.txt
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/二层平面图.png
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/高架仓库.png
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/货位信息.png
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/三层平面图.png
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/一层平面图_标记巷道.png
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/一层平面图_网格分析.png
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/一层平面图_巷道归属.png
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/一层平面图.png
+Admin.NET/Admin.NET.Application/Service/WmsPort/Doc/Test/CAD/JC44WMS立体库库位.xlsx
+/Admin.NET/Admin.NET.Application/Entity/WmsStockCheckTask2.cs
+/.gitignore
+AGENTS.md
