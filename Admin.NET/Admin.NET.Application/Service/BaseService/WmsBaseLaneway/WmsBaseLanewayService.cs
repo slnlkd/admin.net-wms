@@ -73,7 +73,7 @@ public partial class WmsBaseLanewayService : IDynamicApiController, ITransient
                 UpdateUserId = u.UpdateUserId,
                 UpdateUserName = u.UpdateUserName,
             });
-		return await query.OrderBuilder(input,"[u].").ToPagedListAsync(input.Page, input.PageSize);
+		return await query.OrderBuilder(input,"u.").ToPagedListAsync(input.Page, input.PageSize);
     }
 
     /// <summary>

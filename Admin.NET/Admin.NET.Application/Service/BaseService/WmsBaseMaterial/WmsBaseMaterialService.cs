@@ -124,7 +124,7 @@ public partial class WmsBaseMaterialService : IDynamicApiController, ITransient
                 Status = u.Status,
                 IsEmpty = u.IsEmpty,
             });
-		var pagedList = await query.OrderBuilder(input,"[u].").ToPagedListAsync(input.Page, input.PageSize);
+		var pagedList = await query.OrderBuilder(input,"u.").ToPagedListAsync(input.Page, input.PageSize);
 
         // 处理多选区域名称回显
         if (pagedList.Items.Any())

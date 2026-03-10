@@ -72,7 +72,7 @@ public partial class WmsBaseBillTypeService : IDynamicApiController, ITransient
                 UpdateUserId = u.UpdateUserId,
                 UpdateUserName = u.UpdateUserName,
             });
-        var result = await query.OrderBuilder(input, "[u].").ToPagedListAsync(input.Page, input.PageSize);
+        var result = await query.OrderBuilder(input, "u.").ToPagedListAsync(input.Page, input.PageSize);
         var qualityInspectionStatusDictMap = (await _sysDictTypeService.GetDataList(new GetDataDictTypeInput { Code = "QualityInspectionStatus" })).ToDictionary(x => x.Value?.Trim() ?? "", x => x.Label);
         foreach (var item in result.Items)
         {
