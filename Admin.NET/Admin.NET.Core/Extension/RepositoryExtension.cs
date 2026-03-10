@@ -10,6 +10,18 @@ namespace Admin.NET.Core;
 
 public static class RepositoryExtension
 {
+    private static string NormalizeOrderPrefix(string prefix)
+    {
+        if (string.IsNullOrWhiteSpace(prefix))
+            return string.Empty;
+
+        return prefix
+            .Replace("[", string.Empty)
+            .Replace("]", string.Empty)
+            .Replace("`", string.Empty)
+            .Trim();
+    }
+
     /// <summary>
     /// 实体假删除 _rep.FakeDelete(entity)
     /// </summary>
@@ -134,9 +146,10 @@ public static class RepositoryExtension
     public static ISugarQueryable<T> OrderBuilder<T>(this ISugarQueryable<T> queryable, BasePageInput pageInput, string prefix = "", string defaultSortField = "Id", bool descSort = true)
     {
         var iSqlBuilder = InstanceFactory.GetSqlBuilderWithContext(queryable.Context);
+        var normalizedPrefix = NormalizeOrderPrefix(prefix);
 
         // 约定默认每张表都有Id排序
-        var orderStr = string.IsNullOrWhiteSpace(defaultSortField) ? "" : $"{prefix}{iSqlBuilder.GetTranslationColumnName(defaultSortField)}" + (descSort ? " Desc" : " Asc");
+        var orderStr = string.IsNullOrWhiteSpace(defaultSortField) ? "" : $"{normalizedPrefix}{iSqlBuilder.GetTranslationColumnName(defaultSortField)}" + (descSort ? " Desc" : " Asc");
 
         TypeAdapterConfig typeAdapterConfig = new();
         typeAdapterConfig.ForType<T, BasePageInput>().IgnoreNullValues(true);
@@ -147,7 +160,7 @@ public static class RepositoryExtension
         {
             nowPagerInput.Field = Regex.Replace(nowPagerInput.Field, @"[\s;()\-'@=/%]", ""); //过滤掉一些关键字符防止构造特殊SQL语句注入
             var orderByDbName = queryable.Context.EntityMaintenance.GetDbColumnName<T>(nowPagerInput.Field);//防止注入，类中只要不存在属性名就会报错
-            orderStr = $"{prefix}{iSqlBuilder.GetTranslationColumnName(orderByDbName)} {(string.IsNullOrEmpty(nowPagerInput.Order) || nowPagerInput.Order.Equals(nowPagerInput.DescStr, StringComparison.OrdinalIgnoreCase) ? "Desc" : "Asc")}";
+            orderStr = $"{normalizedPrefix}{iSqlBuilder.GetTranslationColumnName(orderByDbName)} {(string.IsNullOrEmpty(nowPagerInput.Order) || nowPagerInput.Order.Equals(nowPagerInput.DescStr, StringComparison.OrdinalIgnoreCase) ? "Desc" : "Asc")}";
         }
         return queryable.OrderByIF(!string.IsNullOrWhiteSpace(orderStr), orderStr);
     }
@@ -165,9 +178,10 @@ public static class RepositoryExtension
     public static ISugarQueryable<T> OrderBuilderToJoin<T>(this ISugarQueryable<T> queryable, BasePageInput pageInput, string prefix = "", string defaultSortField = "Id", bool descSort = true)
     {
         var iSqlBuilder = InstanceFactory.GetSqlBuilderWithContext(queryable.Context);
+        var normalizedPrefix = NormalizeOrderPrefix(prefix);
 
         // 处理默认排序
-        var orderStr = string.IsNullOrWhiteSpace(defaultSortField) ? "" : $"{prefix}{iSqlBuilder.GetTranslationColumnName(defaultSortField)}" + (descSort ? " Desc" : " Asc");
+        var orderStr = string.IsNullOrWhiteSpace(defaultSortField) ? "" : $"{normalizedPrefix}{iSqlBuilder.GetTranslationColumnName(defaultSortField)}" + (descSort ? " Desc" : " Asc");
 
         TypeAdapterConfig typeAdapterConfig = new();
         typeAdapterConfig.ForType<T, BasePageInput>().IgnoreNullValues(true);
@@ -189,10 +203,11 @@ public static class RepositoryExtension
             else
             {
                 // 如果字段名不包含表别名，则添加前缀
-                finalFieldName = $"{prefix}{iSqlBuilder.GetTranslationColumnName(orderByDbName)}";
+                finalFieldName = $"{normalizedPrefix}{iSqlBuilder.GetTranslationColumnName(orderByDbName)}";
             }
             // 特殊字段强制加u.前缀 用于多表关联
-            if (finalFieldName.Contains("CreateTime") || finalFieldName.Contains("UpdateTime") || finalFieldName.Contains("CreateUserId") || finalFieldName.Contains("CreateUserName") || finalFieldName.Contains("UpdateUserId") || finalFieldName.Contains("UpdateUserName"))
+            if ((finalFieldName.Contains("CreateTime") || finalFieldName.Contains("UpdateTime") || finalFieldName.Contains("CreateUserId") || finalFieldName.Contains("CreateUserName") || finalFieldName.Contains("UpdateUserId") || finalFieldName.Contains("UpdateUserName"))
+                && !finalFieldName.StartsWith("u."))
             {
                 finalFieldName = "u." + finalFieldName;
             }
