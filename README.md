@@ -1,143 +1,130 @@
-<div align="center">
-    <p align="center">
-        <img src="./Web/src/assets/logo.png" height="128" alt="logo"/>
-    </p>
-</div>
-<div align="center"><h3>站在巨人肩膀上的 .NET 通用权限开发框架</h3></div>
+# Admin.NET WMS 仓储管理系统
 
-<div align="center">
+基于 [Admin.NET](https://gitee.com/zuohuaijun/Admin.NET) 通用权限框架构建的企业级 WMS（Warehouse Management System）仓储管理系统，覆盖入库、出库、调拨、盘点、库位管理等全链路仓储业务流程，支持 PC 端后台管理与 PDA 移动端扫码作业。
 
-[![star](https://gitee.com/zuohuaijun/Admin.NET/badge/star.svg?theme=dark)](https://gitee.com/zuohuaijun/Admin.NET/stargazers)
-[![fork](https://gitee.com/zuohuaijun/Admin.NET/badge/fork.svg?theme=dark)](https://gitee.com/zuohuaijun/Admin.NET/members)
-[![GitHub license](https://img.shields.io/badge/license-MIT-yellow)](https://gitee.com/zuohuaijun/Admin.NET/blob/next/LICENSE)
+## 功能模块
 
-</div>
+### 基础数据管理
+- **仓库管理** — 多仓库、多库区、巷道、库位层级维护
+- **物料管理** — 物料编码、规格、单位、批次/效期属性
+- **客户/供应商管理** — 客户预设、供应商预设，支持出入库单据关联
+- **单据类型** — 灵活定义入库/出库/移库/盘点等业务单据类型
 
-## 🎁框架介绍
-Admin.NET 是基于 .NET6 (Furion/SqlSugar) 实现的通用权限开发框架，前端采用 Vue3+Element-plus+Vite5，整合众多优秀技术和框架，模块插件式开发。集成多租户、缓存、数据校验、鉴权、事件总线、动态API、通讯、远程请求、任务调度、打印等众多黑科技。代码结构简单清晰，注释详尽，易于上手与二次开发，即便是复杂业务逻辑也能迅速实现，真正实现“开箱即用”。
+### 入库管理
+- 入库通知 → 入库单 → 入库任务 → 扫码上架
+- 支持采购入库、生产入库、退货入库等多种入库类型
+- 入库标签打印、质检状态联动
 
-面向中小企业快速开发平台框架，框架采用主流技术开发设计，前后端分离架构模式。完美适配国产化软硬件环境，支持国产中间件、国产数据库、麒麟操作系统、Windows、Linux部署使用；集成国密加解密插件，使用SM2、SM3、SM4等国密算法进行签名、数据完整性保护；软件层面全面遵循等级保护测评要求，完全符合等保、密评要求。
+### 出库管理
+- 出库通知 → 出库单 → 出库任务 → 波次拣货
+- 支持销售出库、生产领料、退货出库等出库类型
+- 先进先出（FIFO）/ 指定批次出库策略
+- 箱码管理、发货单生成
+
+### 库存管理
+- 实时库存查询（按仓库/库位/物料/批次多维度）
+- 库存调整、安全库存预警
+- 托盘库存、库位库存、箱库存分层管理
+
+### 移库管理
+- 移库通知 → 移库单 → 移库任务
+- 库位转移、库存冻结/释放
+
+### 盘点管理
+- 盘点通知 → 盘点任务 → 差异处理
+- 明盘/盲盘、复盘、差异审核
+
+### PDA 移动端
+- 扫码收货、上架、拣货、盘点、库存查询
+- 适配工业 PDA 设备（Android）
+- 离线缓存与数据同步
+
+### 统计报表
+- 出入库汇总、库存周转、库龄分析
+- 操作日志、库存流水追溯
+- Dashboard 仪表盘
+
+## 技术栈
+
+| 层级 | 技术 |
+|------|------|
+| 后端框架 | .NET 8/9、Furion |
+| ORM | SqlSugar |
+| 前端 | Vue 3 + TypeScript + Element Plus + Vite |
+| 移动端 (PDA) | Layui + JavaScript |
+| 数据库 | SQL Server（可切换 MySQL 等） |
+| 缓存 | Redis |
+| 部署 | Docker、Windows Server / Linux |
+
+## 项目结构
 
 ```
-超高人气的框架(Furion)配合高性能超简单的ORM(SqlSugar)加持，阅历痛点，相见恨晚！让 .NET 开发更简单，更通用，更流行！
+admin.net-wms/
+├── Admin.NET/                  # 后端服务
+│   └── Admin.NET.Application/  # WMS 业务应用层
+│       ├── Entity/             # 数据实体（Wms*）
+│       ├── Service/            # 业务服务
+│       │   ├── BaseService/    # 基础数据服务
+│       │   ├── WmsImport*/     # 入库相关
+│       │   ├── WmsExport*/     # 出库相关
+│       │   ├── WmsStock*/      # 库存相关
+│       │   ├── WmsMove*/       # 移库相关
+│       │   ├── WmsStockCheck*/ # 盘点相关
+│       │   ├── WmsPda/         # PDA 服务
+│       │   ├── WmsDashboard/   # 仪表盘
+│       │   └── WmsStatisticalReport/  # 统计报表
+│       └── Const/              # 常量定义
+├── Web/                        # PC 前端 (Vue 3)
+├── PDA/                        # PDA 移动端 (Layui)
+├── vite-project/               # Vite 前端工程
+└── docker/                     # Docker 部署配置
 ```
 
-## 🍁说明
-1.  支持各种数据库，后台配置文件自行修改（自动生成数据库及种子数据）
-2.  前端运行步骤：1、安装依赖pnpm install 2、运行pnpm run dev 3、打包pnpm run build
-3.  QQ交流群1：[87333204](https://jq.qq.com/?_wv=1027&k=1t8iqf0G)  QQ交流群2：[252381476](https://jq.qq.com/?_wv=1027&k=IkzihDcL)  
-4.  演示环境1：https://demo.adminnet.top  账号：superadmin  密码：Admin.NET++010101
-5. [GitHub 镜像地址](https://github.com/zuohuaijun/Admin.NET.git)  [Gitee 镜像地址](https://gitee.com/zuohuaijun/Admin.NET.git)  [GitCode 镜像地址](https://gitcode.com/zuohuaijun/Admin.NET.git)
-6.  在线文档 [https://adminnet.top/](https://adminnet.top/)
+## 快速开始
 
-## Docker 部署
+### 环境要求
+- .NET 8.0+
+- Node.js 18+
+- SQL Server（或 MySQL）
+- Redis
 
-项目已补充适合云服务器直接构建运行的 Docker 方案，部署说明见：
+### 后端运行
 
-- [docker/README.md](./docker/README.md)
-
-## 📙开发流程
 ```bash
-1. 建议每个应用系统单独创建一个工程（Admin.NET.Application层只是示例），单独设置各项配置，引用Admin.NET.Core层（非必须不改工程名）
-
-2. Web层引用新建的应用层工程即可（所有应用系统一个解决方案显示一个后台一套代码搞定，可以自由切换不同应用层）
-
-# 可以随主仓库升级而升级避免冲突，原则上接口、服务、控制器合并模式不影响自建应用层发挥与使用。若必须修改或补充主框架，也欢迎PR！
-
+cd Admin.NET/Admin.NET.Web.Core
+# 修改 appsettings.json 中的数据库连接字符串
+dotnet run
 ```
 
-## 🍎效果截图
-<table>
-    <tr>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/1.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/2.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/3.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/4.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/5.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/6.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/7.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/8.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/9.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/10.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/11.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/12.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/13.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/14.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/15.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/16.png"/></td>
-    </tr>
-</table>
+### 前端运行
 
-## 🍖内置功能
- 1. 主控面板：控制台页面，可进行工作台，分析页，统计等功能的展示。
- 2. 用户管理：对企业用户和系统管理员用户的维护，可绑定用户职务，机构，角色，数据权限等。
- 3. 机构管理：公司组织架构维护，支持多层级结构的树形结构。
- 4. 职位管理：用户职务管理，职务可作为用户的一个标签。
- 5. 菜单管理：配置系统菜单，操作权限，按钮权限标识等，包括目录、菜单、按钮。
- 6. 角色管理：角色绑定菜单后，可限制相关角色的人员登录系统的功能范围。角色也可以绑定数据授权范围。
- 7. 字典管理：对系统中经常使用的一些较为固定的数据进行维护。
- 8. 访问日志：用户的登录和退出日志的查看和管理。
- 9. 操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
-10. 服务监控：服务器的运行状态，CPU、内存、网络等信息数据的查看。
-11. 在线用户：当前系统在线用户的查看，包括强制下线。基于 SignalR 实现。
-12. 公告管理：系统通知公告信息发布维护，使用 SignalR 实现对用户实时通知。
-13. 文件管理：文件的上传下载查看等操作，文件可使用本地存储，阿里云oss、腾讯cos等接入，支持拓展。
-14. 任务调度：采用 Sundial，.NET 功能齐全的开源分布式作业调度系统。
-15. 系统配置：系统运行的参数的维护，参数的配置与系统运行机制息息相关。
-16. 邮件短信：发送邮件功能、发送短信功能。
-17. 系统接口：使用 Swagger 生成相关 api 接口文档。支持 Knife4jUI 皮肤。
-18. 代码生成：可以一键生成前后端代码，自定义配置前端展示控件，让开发更快捷高效。
-19. 在线构建器：拖动表单元素生成相应的 VUE 代码(支持vue3)。
-20. 对接微信：对接微信小程序开发，包括微信支付。
-21. 导入导出：采用 Magicodes.IE 支持文件导入导出，支持根据H5模板生成PDF等报告文件。
-22. 限流控制：采用 AspNetCoreRateLimit 组件实现对接口访问限制。
-23. ES 日志：通过 NEST 组件实现日志存取到 Elasticsearch 日志系统。
-24. 开放授权：支持OAuth 2.0开放标准授权登录，比如微信。
-25. APIJSON：适配腾讯APIJSON协议，支持后端0代码，[使用文档](https://github.com/liaozb/APIJSON.NET)。
-26. 数据库视图：基于SqlSugar生成查询SQL + 表实体维护视图，可维护性更强。
-
-## 🛒应用商城
-
-🎖️[iMES工厂管家](https://imes.625sc.com)：一款基于.NetCore3.1和Vue3的MES管理系统。项目亮点：模版打印，Excel模版导出，自定义实体扩展，移动端精美设计，大屏设计等功能。
-
-<table>
-    <tr>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/shop/iMES/1.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/shop/iMES/2.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/shop/iMES/3.png"/></td>
-        <td><img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/shop/iMES/4.png"/></td>
-    </tr>
-</table>
-
-## 🎀捐赠支持
+```bash
+cd Web
+pnpm install
+pnpm run dev
 ```
-如果对您有帮助，请点击右上角⭐Star关注或扫码捐赠，感谢支持开源！
-```
-<img src="https://gitee.com/zuohuaijun/Admin.NET/raw/next/doc/img/pay.png"/>
 
-## 💐特别鸣谢
-- 👉 Furion：[https://gitee.com/dotnetchina/Furion](https://gitee.com/dotnetchina/Furion)
-- 👉 vue-next-admin：[https://lyt-top.gitee.io/vue-next-admin-doc-preview/](https://lyt-top.gitee.io/vue-next-admin-doc-preview/)
-- 👉 SqlSugar：[https://gitee.com/dotnetchina/SqlSugar](https://gitee.com/dotnetchina/SqlSugar)
-- 👉 NewLife.Redis：[https://github.com/NewLifeX/NewLife.Redis](https://github.com/NewLifeX/NewLife.Redis)
-- 👉 Magicodes.IE：[https://gitee.com/magicodes/Magicodes.IE](https://gitee.com/magicodes/Magicodes.IE)
-- 👉 SKIT.FlurlHttpClient.Wechat：[https://gitee.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Wechat](https://gitee.com/fudiwei/DotNetCore.SKIT.FlurlHttpClient.Wechat)
-- 👉 IdGenerator：[https://github.com/yitter/idgenerator](https://github.com/yitter/idgenerator)
-- 👉 UAParser：[https://github.com/ua-parser/uap-csharp/](https://github.com/ua-parser/uap-csharp/)
-- 👉 OnceMi.AspNetCore.OSS：[https://github.com/oncemi/OnceMi.AspNetCore.OSS](https://github.com/oncemi/OnceMi.AspNetCore.OSS)
-- 👉 NETCore.MailKit：[https://github.com/myloveCc/NETCore.MailKit](https://github.com/myloveCc/NETCore.MailKit)
-- 👉 Lazy.Captcha.Core：[https://gitee.com/pojianbing/lazy-captcha](https://gitee.com/pojianbing/lazy-captcha)
-- 👉 AspNetCoreRateLimit：[https://github.com/stefanprodan/AspNetCoreRateLimit](https://github.com/stefanprodan/AspNetCoreRateLimit)
-- 👉 Elasticsearch.Net：[https://github.com/elastic/elasticsearch-net](https://github.com/elastic/elasticsearch-net)
-- 👉 Masuit.Tools：[https://gitee.com/masuit/Masuit.Tools](https://gitee.com/masuit/Masuit.Tools)
-- 👉 IGeekFan.AspNetCore.Knife4jUI：[https://github.com/luoyunchong/IGeekFan.AspNetCore.Knife4jUI](https://github.com/luoyunchong/IGeekFan.AspNetCore.Knife4jUI)
-- 👉 AspNet.Security.OAuth.Providers：[https://github.com/aspnet-contrib/AspNet.Security.OAuth.Providers](https://github.com/aspnet-contrib/AspNet.Security.OAuth.Providers)
-- 👉 System.Linq.Dynamic.Core：[https://github.com/zzzprojects/System.Linq.Dynamic.Core](https://github.com/zzzprojects/System.Linq.Dynamic.Core)
-- 👉 APIJSON.NET：[https://github.com/liaozb/APIJSON.NET](https://github.com/liaozb/APIJSON.NET)
-- 👉 vue-plugin-hiprint：[https://gitee.com/CcSimple/vue-plugin-hiprint](https://gitee.com/CcSimple/vue-plugin-hiprint)
+### Docker 部署
+
+```bash
+# 参考 docker/README.md
+docker compose up -d
+```
+
+## 仓库地址
+
+- GitHub：[https://github.com/slnlkd/admin.net-wms](https://github.com/slnlkd/admin.net-wms)
+
+## 致谢
+
+本项目基于以下开源项目构建：
+
+- [Admin.NET](https://gitee.com/zuohuaijun/Admin.NET) — .NET 通用权限开发框架
+- [Furion](https://gitee.com/dotnetchina/Furion) — .NET 应用框架
+- [SqlSugar](https://gitee.com/dotnetchina/SqlSugar) — ORM 框架
+- [vue-next-admin](https://lyt-top.gitee.io/vue-next-admin-doc-preview/) — 前端模板
+- [Element Plus](https://element-plus.org/) — Vue 3 UI 组件库
+
+## 许可证
+
+本项目基于 Admin.NET 二次开发，遵循 MIT 许可证。
